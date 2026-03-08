@@ -10,11 +10,7 @@ Desarrollar un programa que simule el funcionamiento y la lógica presentes en e
 
 ## Contexto y justificación  
 <div align="justify">
-Los juegos de mesa son una actividad milenaria, que desde hace más de 5000 años han sido cruciales como herramientas de estrategia, representación de creencias y entretenimiento. Desde civilizaciones tan antiguas como la egipcia hasta la realidad actual, es indudable que estos juegos han trascendido generaciones, ideologías, clases sociales e incluso fronteras. Entre reflejar creencias, representar conceptos matemáticos, trabajar la atención y el pensamiento estratégico, enseñar didácticamente o disfrutar del ocio, cada juego de mesa ha representado un momento de la historia de la humanidad que ha sido capaz de marcar generaciones enteras.
-</div>
-
-
-<div align="justify">
+Los juegos de mesa son una actividad milenaria, que desde hace más de 5000 años han sido cruciales como herramientas de estrategia, representación de creencias y entretenimiento. Desde civilizaciones tan antiguas como la egipcia hasta la realidad actual, es indudable que estos juegos han trascendido generaciones, ideologías, clases sociales e incluso fronteras. Entre reflejar creencias, representar conceptos matemáticos, trabajar la atención y el pensamiento estratégico, enseñar didácticamente o disfrutar del ocio, cada juego de mesa ha representado un momento de la historia de la humanidad que ha sido capaz de marcar generaciones enteras.<br><br>
 Uno de estos es Rummikub (conocido en español como Rummi-Q), un juego que nació en un contexto de opresión por parte del régimen comunista y representó la capacidad y fortaleza del ser humano en situaciones de peligro e incertidumbre. En un momento en el que jugar cartas era prohibido, Ephraim Hertzano, un hombre trabajador que vivía en Rumania, ingenió un juego que usa pequeñas fichas, que puede ser jugado por personas de todas las edades y (muy importante para la época) que no impone ninguna barrera de idioma o religión. Después de la guerra, en los años 40’ hizo realidad su visión al mudarse a Israel, desarrollar el juego y publicarlo al mercado.
 </div>
 
