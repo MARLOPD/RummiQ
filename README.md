@@ -1,6 +1,6 @@
 # RummiQ
 
-Objetivos  
+## Objetivos  
 1.1 Objetivo general:  
 Desarrollar un programa que simule el funcionamiento y la lógica presentes en el juego Rummi-Q. Mediante la definición e interacción de clases, objetos, métodos y atributos, se diseñará una estructura de software que represente los distintos componentes del juego y permita modelar su dinámica.  
 1.2 Objetivos específicos:  
@@ -8,7 +8,7 @@ Desarrollar un programa que simule el funcionamiento y la lógica presentes en e
 1.2.2 Implementar objetos para representar dinámicamente el estado del juego al ejecutar el programa.  
 1.2.3 Definir la interacción entre objetos para realizar acciones como repartir fichas, formar grupos y administrar turnos.  
 
-Contexto y justificación  
+## Contexto y justificación  
 <div align="justify">
 Los juegos de mesa son una actividad milenaria, que desde hace más de 5000 años han sido cruciales como herramientas de estrategia, representación de creencias y entretenimiento. Desde civilizaciones tan antiguas como la egipcia hasta la realidad actual, es indudable que estos juegos han trascendido generaciones, ideologías, clases sociales e incluso fronteras. Entre reflejar creencias, representar conceptos matemáticos, trabajar la atención y el pensamiento estratégico, enseñar didácticamente o disfrutar del ocio, cada juego de mesa ha representado un momento de la historia de la humanidad que ha sido capaz de marcar generaciones enteras. 	  
 </div>
@@ -29,7 +29,7 @@ Ahora, la era digital ha abierto un campo totalmente nuevo, innovador, emocionan
 Utilizando conocimientos de Programación Orientada a Objetos buscaremos simular las complejas interfaces, relaciones y momentos que ocurren al jugar Rummi-Q, afrontando diversos retos que se interpondrán en el camino de representar un orden de pensamiento, reglas y estrategias propia de este juego de mesa.
 </div>  
 
-Requisitos funcionales:  
+## Requisitos funcionales:  
   
 - El sistema debe permitir registrar jugadores con nombre	.  
 - El sistema debe permitir crear nuevas partidas indicando número de jugadores. (2 a 4 jugadores)  
@@ -50,7 +50,7 @@ Requisitos funcionales:
 - El sistema debe registrar estadísticas individuales (victorias, derrotas, promedio de puntos, tiempo de juego).  
 - El sistema debe permitir jugar contra un oponente controlado por la computadora.  
 
-Requisitos no funcionales:  
+## Requisitos no funcionales:  
   
 - El sistema debe responder a las acciones del jugador rápidamente. (en menos de 3 segundos)  
 - La interfaz debe ser intuitiva y fácil de usar.  
