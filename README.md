@@ -1,7 +1,7 @@
 # RummiQ
 
 Objetivos
-1.1 Objetivo general: Desarrollar un programa que simule el funcionamiento y la lógica presentes en el juego Rummi-Q. Mediante la definición e interacción de clases, objetos, métodos y atributos, se diseñará una estructura de software que represente los distintos componentes del juego y permita modelar su dinámica.
+1.1 Objetivo general: Desarrollar un programa que simule el funcionamiento y la lógica presentes en el juego Rummi-Q. Mediante la definición e interacción de clases, objetos, métodos y atributos, se diseñará una estructura de software que represente los distintos componentes del juego y permita modelar su dinámica.  
 1.2 Objetivos específicos: 
 1.2.1 Representar cada elemento del juego mediante clases, garantizando un óptimo funcionamiento entre entidades como fichas, jugadores, jugadas y el tablero.
 1.2.2 Implementar objetos para representar dinámicamente el estado del juego al ejecutar el programa.
