@@ -24,7 +24,7 @@ Ahora, la era digital ha abierto un campo totalmente nuevo, innovador, emocionan
 <div align="justify">
 Utilizando conocimientos de Programación Orientada a Objetos buscaremos simular las complejas interfaces, relaciones y momentos que ocurren al jugar Rummi-Q, afrontando diversos retos que se interpondrán en el camino de representar un orden de pensamiento, reglas y estrategias propia de este juego de mesa.  
 </div>
-  
+    
 Requisitos funcionales:  
   
 - El sistema debe permitir registrar jugadores con nombre	.  
