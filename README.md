@@ -22,9 +22,9 @@ Este es un claro ejemplo de la enorme trascendencia, importancia y papel que tie
 Ahora, la era digital ha abierto un campo totalmente nuevo, innovador, emocionante y desbordante de posibilidades. Desde la creación del primer computador, la invención del World Wide Web, o el actual auge de la Inteligencia Artificial la humanidad ha sido testigo de cambios de tamaño astronómico. Los juegos digitales aparecieron en los años 50´y 60´como experimentos académicos, y al día de hoy hay innumerables consolas, interfaces y programas que representan ese inicio que alguna vez tuvieron los juegos de mesa.    
 </div>
 <div align="justify">
-Utilizando conocimientos de Programación Orientada a Objetos buscaremos simular las complejas interfaces, relaciones y momentos que ocurren al jugar Rummi-Q, afrontando diversos retos que se interpondrán en el camino de representar un orden de pensamiento, reglas y estrategias propia de este juego de mesa.  
+Utilizando conocimientos de Programación Orientada a Objetos buscaremos simular las complejas interfaces, relaciones y momentos que ocurren al jugar Rummi-Q, afrontando diversos retos que se interpondrán en el camino de representar un orden de pensamiento, reglas y estrategias propia de este juego de mesa.
 </div>
-    
+
 Requisitos funcionales:  
   
 - El sistema debe permitir registrar jugadores con nombre	.  
