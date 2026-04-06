@@ -1,0 +1,8 @@
+com\rummyq\MainApp.class
+com\rummyq\model\Usuario.class
+com\rummyq\PantallaInicio.class
+com\rummyq\view\PantallaLogin.class
+com\rummyq\view\PantallaRegistro.class
+com\rummyq\view\PantallaRecuperacion.class
+module-info.class
+com\rummyq\DialogReglas.class
