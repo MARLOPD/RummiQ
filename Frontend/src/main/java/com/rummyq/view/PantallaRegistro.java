@@ -51,6 +51,7 @@ public class PantallaRegistro {
     private ComboBox<String> comboPregunta;
     private TextField campoRespuesta;
     private Label lblMensaje;
+    private Button btnRegistrar;
 
     public PantallaRegistro(Stage stage) {
         this.stage = stage;
@@ -130,8 +131,9 @@ public class PantallaRegistro {
         lblMensaje.setWrapText(true);
         lblMensaje.setMaxWidth(380);
 
+
         // Botón registrar
-        Button btnRegistrar = crearBotonPrimario("Crear cuenta");
+        btnRegistrar = crearBotonPrimario("Crear cuenta");
         btnRegistrar.setMaxWidth(Double.MAX_VALUE);
         btnRegistrar.setOnAction(e -> accionRegistrar());
 
@@ -282,26 +284,40 @@ public class PantallaRegistro {
             mostrarMensaje("Selecciona una pregunta de seguridad.", false);
             return;
         }
+        // ── Hashear antes de enviar por la red ───────────────────────────────
+        String passHash = com.rummyq.util.HashUtil.sha256(pass);
 
-        // Crear y guardar usuario
-        Usuario nuevo = new Usuario(
-                correo,
-                "",
-                pregunta,
-                "");
-        nuevo.setNombre(nombre); // nombre en línea elegido por el jugador
+        // ── Llamada HTTP en hilo separado (no congela la UI) ─────────────────
+        btnRegistrar.setDisable(true);
+        mostrarMensaje("Creando cuenta…", true);
 
-        boolean registrado = false;
+        new Thread(() -> {
+            try {
+                com.rummyq.service.RegistroService service =
+                    new com.rummyq.service.RegistroService();
+                boolean ok = service.registrarUsuario(nombre, correo, passHash);
 
-        if (registrado) {
-            mostrarMensaje("¡Cuenta creada exitosamente! Redirigiendo…", true);
-            // Ir al login después de 1.5 segundos
-            javafx.animation.PauseTransition pausa = new javafx.animation.PauseTransition(Duration.seconds(1.5));
-            pausa.setOnFinished(e -> new PantallaLogin(stage).mostrar());
-            pausa.play();
-        } else {
-            mostrarMensaje("Este correo ya está registrado. Intenta con otro.", false);
-        }
+                javafx.application.Platform.runLater(() -> {
+                    if (ok) {
+                        mostrarMensaje("¡Cuenta creada! Redirigiendo al login…", true);
+                        javafx.animation.PauseTransition pausa =
+                            new javafx.animation.PauseTransition(
+                                javafx.util.Duration.seconds(1.5));
+                        pausa.setOnFinished(e -> new PantallaLogin(stage).mostrar());
+                        pausa.play();
+                    } else {
+                        mostrarMensaje("Este correo ya está registrado.", false);
+                        btnRegistrar.setDisable(false);
+                    }
+                });
+
+            } catch (Exception ex) {
+                javafx.application.Platform.runLater(() -> {
+                    mostrarMensaje("Sin conexión al servidor. ¿Está corriendo el backend?", false);
+                    btnRegistrar.setDisable(false);
+                });
+            }
+        }).start();
     }
 
     private void mostrarMensaje(String texto, boolean esExito) {
