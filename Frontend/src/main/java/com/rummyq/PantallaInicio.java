@@ -323,16 +323,11 @@ public class PantallaInicio {
     // ── Acciones ─────────────────────────────────────────────────────────────
 
     private void accionNuevaPartida() {
-        // TODO: cuando tengas la pantalla del tablero, reemplaza esta línea:
-        // new PantallaJuego(stage).mostrar();
-        System.out.println("► Navegar a PantallaJuego");
-
-        // Animación de salida
-        FadeTransition salida = new FadeTransition(Duration.millis(400), escena.getRoot());
-        salida.setFromValue(1);
-        salida.setToValue(0);
-        salida.setOnFinished(e -> System.out.println("→ PantallaJuego lista"));
-        salida.play();
+    FadeTransition salida = new FadeTransition(Duration.millis(400), escena.getRoot());
+    salida.setFromValue(1);
+    salida.setToValue(0);
+    salida.setOnFinished(e -> new com.rummyq.view.PantallaLogin(stage).mostrar());
+    salida.play();
     }
 
     private void accionComoJugar() {
