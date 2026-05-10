@@ -27,7 +27,8 @@ hs_err_pid*
 replay_pid*
 
 # Maven build folder
-/target/
+target/
+**/target/
 
 # IntelliJ IDEA
 /.idea/

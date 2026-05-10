@@ -1,8 +1,7 @@
 package com.rummyq;
 
-import com.rummyq.view.PantallaLogin;
-import com.rummyq.view.PantallaRecuperacion;
-import com.rummyq.view.PantallaRegistro;
+import com.rummyq.model.ScreenConfig;
+import com.rummyq.view.MainScene;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -13,23 +12,19 @@ import javafx.stage.Stage;
  */
 public class MainApp extends Application {
 
-    public static final String TITULO_JUEGO = "RummyQ";
-    public static final int ANCHO_VENTANA = 1280;
-    public static final int ALTO_VENTANA = 720;
-
     @Override
     public void start(Stage stagePrincipal) {
-        stagePrincipal.setTitle(TITULO_JUEGO);
-        stagePrincipal.setWidth(ANCHO_VENTANA);
-        stagePrincipal.setHeight(ALTO_VENTANA);
+        stagePrincipal.setTitle(ScreenConfig.gameTitle);
+        stagePrincipal.setWidth(ScreenConfig.getScreenWidth());
+        stagePrincipal.setHeight(ScreenConfig.getScreenHeight());
         stagePrincipal.setResizable(false);
 
         // Mostrar la pantalla inicial
         // PantallaRegistro pantallaRegistro = new PantallaRegistro(stagePrincipal);
         // pantallaRegistro.mostrar();
 
-        PantallaInicio pantallaInicio = new PantallaInicio(stagePrincipal);
-        pantallaInicio.mostrar();
+        MainScene mainScene = new MainScene(stagePrincipal);
+        mainScene.showScreen();
         // PantallaRecuperacion pantallaRecuperacion = new
         // PantallaRecuperacion(stagePrincipal);
         // pantallaRecuperacion.mostrar();
