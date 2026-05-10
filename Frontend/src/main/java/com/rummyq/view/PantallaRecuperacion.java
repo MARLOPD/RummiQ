@@ -1,6 +1,7 @@
 package com.rummyq.view;
 
 import com.rummyq.MainApp;
+import com.rummyq.model.ScreenConfig;
 import com.rummyq.model.Usuario;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
@@ -38,6 +39,9 @@ public class PantallaRecuperacion {
 
     private final Stage stage;
 
+    private final int screenWidth = ScreenConfig.getScreenWidth();
+    private final int screenHeight = ScreenConfig.getScreenHeight();
+
     // Estado del flujo
     private Usuario usuarioEncontrado = null;
     private int paso = 1;
@@ -64,15 +68,15 @@ public class PantallaRecuperacion {
         StackPane raiz = new StackPane();
         raiz.getChildren().addAll(crearFondo(), crearContenido());
 
-        Scene escena = new Scene(raiz, MainApp.ANCHO_VENTANA, MainApp.ALTO_VENTANA);
+        Scene escena = new Scene(raiz, screenWidth, screenHeight);
         stage.setScene(escena);
         stage.show();
     }
 
     private Pane crearFondo() {
         Pane fondo = new Pane();
-        fondo.setPrefSize(MainApp.ANCHO_VENTANA, MainApp.ALTO_VENTANA);
-        Rectangle rect = new Rectangle(MainApp.ANCHO_VENTANA, MainApp.ALTO_VENTANA);
+        fondo.setPrefSize(screenWidth, screenHeight);
+        Rectangle rect = new Rectangle(screenWidth, screenHeight);
         rect.setFill(new LinearGradient(0.5, 0, 0.5, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0.0, Color.web("#2a5c3a")),
                 new Stop(0.5, Color.web("#1a472a")),

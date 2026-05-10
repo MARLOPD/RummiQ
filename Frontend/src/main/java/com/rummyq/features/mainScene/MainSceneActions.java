@@ -1,0 +1,49 @@
+package com.rummyq.features.mainScene;
+
+import com.rummyq.core.DialogReglas;
+import com.rummyq.view.PantallaLogin;
+
+import javafx.animation.FadeTransition;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class MainSceneActions {
+
+    private Stage stage;
+
+    public MainSceneActions(Stage _stage) {
+        stage = _stage;
+    }
+
+    public void startGame() {
+        System.out.println("► FadeOut to GameScene...");
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(800), stage.getScene().getRoot());
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setOnFinished(e -> System.out.println("→ Game Scene ready"));
+        fadeOut.play();
+    }
+
+    public void showLoginScene() {
+        System.out.println("► FadeOut to LoginScene...");
+
+        PantallaLogin loginScene = new PantallaLogin(stage);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(800), stage.getScene().getRoot());
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setOnFinished(e -> loginScene.mostrar());
+        fadeOut.play();
+    }
+
+    public void showRules() {
+        DialogReglas dialog = new DialogReglas(stage);
+        dialog.mostrar();
+    }
+
+    public void exitGame() {
+        stage.close();
+    }
+
+}

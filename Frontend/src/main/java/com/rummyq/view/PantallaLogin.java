@@ -1,6 +1,7 @@
 package com.rummyq.view;
 
 import com.rummyq.MainApp;
+import com.rummyq.model.ScreenConfig;
 import com.rummyq.model.Usuario;
 import javafx.animation.*;
 import javafx.geometry.Insets;
@@ -44,6 +45,9 @@ public class PantallaLogin {
     private final Stage stage;
     private Scene escena;
 
+    private final int screenWidth = ScreenConfig.getScreenWidth();
+    private final int screenHeight = ScreenConfig.getScreenHeight();
+
     // Campos del formulario
     private TextField campoCorreo;
     private PasswordField campoContrasena;
@@ -62,7 +66,7 @@ public class PantallaLogin {
                 crearBorde(),
                 crearContenido());
 
-        escena = new Scene(raiz, MainApp.ANCHO_VENTANA, MainApp.ALTO_VENTANA);
+        escena = new Scene(raiz, screenWidth, screenHeight);
         stage.setScene(escena);
         stage.show();
     }
@@ -70,8 +74,8 @@ public class PantallaLogin {
     // ── Fondo y borde ────────────────────────────────────────────────────────
     private Pane crearFondo() {
         Pane fondo = new Pane();
-        fondo.setPrefSize(MainApp.ANCHO_VENTANA, MainApp.ALTO_VENTANA);
-        Rectangle rect = new Rectangle(MainApp.ANCHO_VENTANA, MainApp.ALTO_VENTANA);
+        fondo.setPrefSize(screenWidth, screenHeight);
+        Rectangle rect = new Rectangle(screenWidth, screenHeight);
         rect.setFill(new LinearGradient(0.5, 0, 0.5, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0.0, Color.web(FELT_CLARO)),
                 new Stop(0.5, Color.web(FELT_MEDIO)),
@@ -82,10 +86,10 @@ public class PantallaLogin {
 
     private Pane crearBorde() {
         Pane capa = new Pane();
-        capa.setPrefSize(MainApp.ANCHO_VENTANA, MainApp.ALTO_VENTANA);
+        capa.setPrefSize(screenWidth, screenHeight);
         capa.setMouseTransparent(true);
         Rectangle borde = new Rectangle(20, 20,
-                MainApp.ANCHO_VENTANA - 40, MainApp.ALTO_VENTANA - 40);
+                screenWidth - 40, screenHeight - 40);
         borde.setFill(Color.TRANSPARENT);
         borde.setStroke(Color.web(ORO_OSCURO));
         borde.setStrokeWidth(2.5);
@@ -119,7 +123,7 @@ public class PantallaLogin {
     private VBox crearPanelLogo() {
         VBox panel = new VBox(16);
         panel.setAlignment(Pos.CENTER);
-        panel.setPrefWidth(MainApp.ANCHO_VENTANA * 0.45);
+        panel.setPrefWidth(screenWidth * 0.45);
         panel.setPadding(new Insets(40));
 
         Label bienvenido = new Label("BIENVENIDO A");
@@ -216,7 +220,7 @@ public class PantallaLogin {
     private VBox crearPanelFormulario() {
         VBox panel = new VBox(18);
         panel.setAlignment(Pos.CENTER);
-        panel.setPrefWidth(MainApp.ANCHO_VENTANA * 0.55);
+        panel.setPrefWidth(screenWidth * 0.55);
         panel.setPadding(new Insets(50, 60, 50, 60));
 
         // Tarjeta del formulario

@@ -1,4 +1,4 @@
-package com.rummyq;
+package com.rummyq.core;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

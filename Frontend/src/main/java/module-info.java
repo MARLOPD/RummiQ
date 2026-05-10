@@ -2,6 +2,7 @@ module com.rummyq {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.xerial.sqlitejdbc;
+    requires javafx.graphics;
 
     opens com.rummyq to javafx.fxml;
     opens com.rummyq.view to javafx.fxml;
