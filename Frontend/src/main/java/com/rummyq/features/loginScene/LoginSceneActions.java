@@ -2,7 +2,7 @@ package com.rummyq.features.loginScene;
 
 import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.Usuario;
-import com.rummyq.view.PantallaRecuperacion;
+import com.rummyq.view.PasswordRecoveryScene;
 import com.rummyq.view.SignUpScene;
 
 import javafx.scene.control.Label;
@@ -48,6 +48,6 @@ public class LoginSceneActions {
     }
 
     public void openRecoverScene() {
-        new PantallaRecuperacion(stage).mostrar();
+        new PasswordRecoveryScene(stage).showScreen();
     }
 }
