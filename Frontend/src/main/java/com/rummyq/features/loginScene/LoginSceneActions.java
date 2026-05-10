@@ -1,9 +1,9 @@
 package com.rummyq.features.loginScene;
 
-import com.rummyq.core.UIColors;
+import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.Usuario;
 import com.rummyq.view.PantallaRecuperacion;
-import com.rummyq.view.PantallaRegistro;
+import com.rummyq.view.SignUpScene;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -23,11 +23,11 @@ public class LoginSceneActions {
         String password = passField.getText();
 
         if (email.isEmpty() || password.isEmpty()) {
-            showMessage("Por favor completa todos los campos.", false, messageLabel);
+            ComponentFactory.showMessage("Por favor completa todos los campos.", false, messageLabel);
             return;
         }
         if (!email.contains("@")) {
-            showMessage("Ingresa un correo electrónico válido.", false, messageLabel);
+            ComponentFactory.showMessage("Ingresa un correo electrónico válido.", false, messageLabel);
             return;
         }
 
@@ -35,24 +35,19 @@ public class LoginSceneActions {
         boolean areCredentialsValid = false;
 
         if (areCredentialsValid) {
-            showMessage("¡Bienvenido, " + user.getNombre() + "!", true, messageLabel);
+            ComponentFactory.showMessage("¡Bienvenido, " + user.getNombre() + "!", true, messageLabel);
             // new PantallaInicio(stage).mostrar();
         } else {
-            showMessage("Correo o contraseña incorrectos.", false, messageLabel);
+            ComponentFactory.showMessage("Correo o contraseña incorrectos.", false, messageLabel);
             LoginSceneAnimationEffects.shakeFields(passField);
         }
     }
 
-    private void showMessage(String text, boolean isSuccess, Label messageLabel) {
-        messageLabel.setText(text);
-        messageLabel.setTextFill(isSuccess ? UIColors.VERDE_EXITO : UIColors.ROJO_ERROR);
+    public void openSignUpScene() {
+        new SignUpScene(stage).showScreen();
     }
 
-    public void abrirRegistro() {
-        new PantallaRegistro(stage).mostrar();
-    }
-
-    public void abrirRecuperacion() {
+    public void openRecoverScene() {
         new PantallaRecuperacion(stage).mostrar();
     }
 }

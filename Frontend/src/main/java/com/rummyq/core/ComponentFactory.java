@@ -3,6 +3,7 @@ package com.rummyq.core;
 import com.rummyq.model.ScreenConfig;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -99,5 +100,10 @@ public class ComponentFactory {
     public static void hoverEffect(Button btn, String hoverStyle, String normalStyle) {
         btn.setOnMouseEntered(e -> btn.setStyle(hoverStyle));
         btn.setOnMouseExited(e -> btn.setStyle(normalStyle));
+    }
+
+    public static void showMessage(String text, boolean isSuccess, Label messageLabel) {
+        messageLabel.setText(text);
+        messageLabel.setTextFill(isSuccess ? UIColors.VERDE_EXITO : UIColors.ROJO_ERROR);
     }
 }

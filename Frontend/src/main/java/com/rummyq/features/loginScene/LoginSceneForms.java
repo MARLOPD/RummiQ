@@ -79,10 +79,10 @@ public class LoginSceneForms {
 
         Button btnRegistrar = LoginSceneIndividuals.createSecondaryButton("Crear cuenta nueva");
         btnRegistrar.setMaxWidth(Double.MAX_VALUE);
-        btnRegistrar.setOnAction(e -> actions.abrirRegistro());
+        btnRegistrar.setOnAction(e -> actions.openSignUpScene());
 
         Button btnOlvide = LoginSceneIndividuals.createPhantomButton("Olvidé mi contraseña");
-        btnOlvide.setOnAction(e -> actions.abrirRecuperacion());
+        btnOlvide.setOnAction(e -> actions.openRecoverScene());
 
         // Enter activa login
         passwordInputField.setOnAction(e -> actions.onLoginClick(emailInputField, passwordInputField, messageLabel));
