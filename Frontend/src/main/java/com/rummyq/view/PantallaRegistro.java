@@ -163,7 +163,7 @@ public class PantallaRegistro {
         btnVolver.setStyle(estilo);
         btnVolver.setOnMouseEntered(e -> btnVolver.setStyle(hover));
         btnVolver.setOnMouseExited(e -> btnVolver.setStyle(estilo));
-        btnVolver.setOnAction(e -> new PantallaLogin(stage).mostrar());
+        btnVolver.setOnAction(e -> new LoginScene(stage).showScreen());
 
         HBox h = new HBox(btnVolver);
         h.setMaxWidth(480);
@@ -301,7 +301,7 @@ public class PantallaRegistro {
             mostrarMensaje("¡Cuenta creada exitosamente! Redirigiendo…", true);
             // Ir al login después de 1.5 segundos
             javafx.animation.PauseTransition pausa = new javafx.animation.PauseTransition(Duration.seconds(1.5));
-            pausa.setOnFinished(e -> new PantallaLogin(stage).mostrar());
+            pausa.setOnFinished(e -> new LoginScene(stage).showScreen());
             pausa.play();
         } else {
             mostrarMensaje("Este correo ya está registrado. Intenta con otro.", false);

@@ -1,5 +1,8 @@
 package com.rummyq.features.mainScene;
 
+import com.rummyq.core.ComponentFactory;
+import com.rummyq.core.UIColors;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -21,18 +24,16 @@ import javafx.util.Duration;
 
 public class MainSceneIndividuals {
 
-    private MainSceneAnimationEffects animationEffects;
     private MainSceneActions actions;
 
     public MainSceneIndividuals(MainSceneActions _actions) {
-        animationEffects = new MainSceneAnimationEffects();
         actions = _actions;
     }
 
     public Label createSubTitle() {
         Label lbl = new Label("B I E N V E N I D O  A");
         lbl.setFont(Font.font("Georgia", FontWeight.LIGHT, 13));
-        lbl.setTextFill(MainSceneColors.COLOR_ORO);
+        lbl.setTextFill(UIColors.COLOR_ORO);
         lbl.setOpacity(0.8);
         return lbl;
     }
@@ -40,7 +41,7 @@ public class MainSceneIndividuals {
     public Label createLogo() {
         Label logo = new Label("RummyQ");
         logo.setFont(Font.font("Georgia", FontWeight.BOLD, 96));
-        logo.setTextFill(MainSceneColors.COLOR_ORO_CLARO);
+        logo.setTextFill(UIColors.COLOR_ORO_CLARO);
         logo.setTextAlignment(TextAlignment.CENTER);
 
         DropShadow sombra = new DropShadow();
@@ -72,7 +73,7 @@ public class MainSceneIndividuals {
         // Diamante central
         Label diamante = new Label("◆");
         diamante.setFont(Font.font(10));
-        diamante.setTextFill(MainSceneColors.COLOR_ORO);
+        diamante.setTextFill(UIColors.COLOR_ORO);
         diamante.setPadding(new Insets(0, 10, 0, 10));
 
         // Línea derecha
@@ -89,13 +90,13 @@ public class MainSceneIndividuals {
     public Label createTagline() {
         Label lbl = new Label("E L   C L Á S I C O   J U E G O   D E   F I C H A S");
         lbl.setFont(Font.font("Georgia", FontWeight.LIGHT, 12));
-        lbl.setTextFill(MainSceneColors.COLOR_CREMA.deriveColor(0, 1, 1, 0.55));
+        lbl.setTextFill(UIColors.COLOR_CREMA.deriveColor(0, 1, 1, 0.55));
         return lbl;
     }
 
     public VBox createButtons() {
-        Button btnNuevaPartida = createPrimaryButton("▶   Nueva Partida");
-        Button btnIngresarCuenta = createPrimaryButton("▶   Ingresar o crear cuenta");
+        Button btnNuevaPartida = ComponentFactory.createPrimaryButton("▶   Nueva Partida");
+        Button btnIngresarCuenta = ComponentFactory.createPrimaryButton("▶   Ingresar o crear cuenta");
         Button btnComoJugar = createSecondaryButton("¿Cómo jugar?");
         Button btnSalir = createGhostButton("Salir");
 
@@ -114,27 +115,8 @@ public class MainSceneIndividuals {
     public Label createFooter() {
         Label lbl = new Label("POO · Proyecto Final · 2026");
         lbl.setFont(Font.font("Georgia", 11));
-        lbl.setTextFill(MainSceneColors.COLOR_CREMA.deriveColor(0, 1, 1, 0.3));
+        lbl.setTextFill(UIColors.COLOR_CREMA.deriveColor(0, 1, 1, 0.3));
         return lbl;
-    }
-
-    private Button createPrimaryButton(String texto) {
-        Button btn = new Button(texto);
-        btn.setPrefWidth(260);
-        btn.setPrefHeight(48);
-        btn.setFont(Font.font("Georgia", FontWeight.BOLD, 14));
-        btn.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #c9a84c, #8a6a20);" +
-                        "-fx-text-fill: #1a0e00;" +
-                        "-fx-background-radius: 6;" +
-                        "-fx-cursor: hand;");
-        animationEffects.hoverEffect(btn,
-                "-fx-background-color: linear-gradient(to bottom, #f0d080, #c9a84c);",
-                "-fx-background-color: linear-gradient(to bottom, #c9a84c, #8a6a20);");
-
-        DropShadow sombra = new DropShadow(14, Color.web("#c9a84c", 0.4));
-        btn.setEffect(sombra);
-        return btn;
     }
 
     private Button createSecondaryButton(String texto) {
@@ -150,7 +132,7 @@ public class MainSceneIndividuals {
                         "-fx-background-radius: 6;" +
                         "-fx-border-radius: 6;" +
                         "-fx-cursor: hand;");
-        animationEffects.hoverEffect(btn,
+        ComponentFactory.hoverEffect(btn,
                 "-fx-background-color: rgba(245,234,214,0.16); -fx-border-color: rgba(201,168,76,0.7); -fx-border-width:1.5; -fx-background-radius:6; -fx-border-radius:6; -fx-text-fill:#f5ead6; -fx-cursor:hand;",
                 "-fx-background-color: rgba(245,234,214,0.08); -fx-border-color: rgba(201,168,76,0.4); -fx-border-width:1.5; -fx-background-radius:6; -fx-border-radius:6; -fx-text-fill:#f5ead6; -fx-cursor:hand;");
         return btn;
@@ -165,7 +147,7 @@ public class MainSceneIndividuals {
                 "-fx-background-color: transparent;" +
                         "-fx-text-fill: rgba(245,234,214,0.4);" +
                         "-fx-cursor: hand;");
-        animationEffects.hoverEffect(btn,
+        ComponentFactory.hoverEffect(btn,
                 "-fx-background-color: transparent; -fx-text-fill: #f5ead6; -fx-cursor:hand;",
                 "-fx-background-color: transparent; -fx-text-fill: rgba(245,234,214,0.4); -fx-cursor:hand;");
         return btn;

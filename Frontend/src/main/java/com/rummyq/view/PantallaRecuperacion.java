@@ -98,7 +98,7 @@ public class PantallaRecuperacion {
         btnVolver.setStyle(ev);
         btnVolver.setOnMouseEntered(e -> btnVolver.setStyle(hv));
         btnVolver.setOnMouseExited(e -> btnVolver.setStyle(ev));
-        btnVolver.setOnAction(e -> new PantallaLogin(stage).mostrar());
+        btnVolver.setOnAction(e -> new LoginScene(stage).showScreen());
 
         HBox encabezado = new HBox(btnVolver);
         encabezado.setMaxWidth(420);
@@ -289,7 +289,7 @@ public class PantallaRecuperacion {
             mostrarMensaje("¡Contraseña actualizada! Redirigiendo al login…", true);
             btnAccion.setDisable(true);
             javafx.animation.PauseTransition pausa = new javafx.animation.PauseTransition(Duration.seconds(2));
-            pausa.setOnFinished(e -> new PantallaLogin(stage).mostrar());
+            pausa.setOnFinished(e -> new LoginScene(stage).showScreen());
             pausa.play();
         } else {
             mostrarMensaje("Error al actualizar. Intenta de nuevo.", false);

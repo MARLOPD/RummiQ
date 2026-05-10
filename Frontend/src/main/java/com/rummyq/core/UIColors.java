@@ -1,13 +1,19 @@
-package com.rummyq.features.mainScene;
+package com.rummyq.core;
 
 import javafx.scene.paint.Color;
 
-public class MainSceneColors {
+public class UIColors {
+    // Background colors
     public static final Color COLOR_FELT_OSCURO = Color.web("#0f2d1a");
     public static final Color COLOR_FELT_MEDIO = Color.web("#1a472a");
     public static final Color COLOR_FELT_CLARO = Color.web("#2a5c3a");
+    // Gold colors
     public static final Color COLOR_ORO = Color.web("#c9a84c");
     public static final Color COLOR_ORO_CLARO = Color.web("#f0d080");
     public static final Color COLOR_ORO_OSCURO = Color.web("#8a6a20");
+    // Accent colors
     public static final Color COLOR_CREMA = Color.web("#f5ead6");
+    // Validations Colors
+    public static final Color ROJO_ERROR = Color.web("#e74c3c");
+    public static final Color VERDE_EXITO = Color.web("#2ecc71");
 }

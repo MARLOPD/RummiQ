@@ -37,28 +37,23 @@ public class MainScene {
         components = new MainSceneIndividuals(actions);
     }
 
-    /** Construye y muestra la pantalla inicial en el Stage. */
     public void showScreen() {
         StackPane pane = new StackPane();
 
-        // Capas (de atrás hacia adelante)
         pane.getChildren().addAll(
                 ComponentFactory.createBackground(),
                 ComponentFactory.createDecoratedBorder(),
-                crearContenidoCentral());
+                createContent());
 
         Scene scene = new Scene(pane, screenWidth, screenHeight);
         stage.setScene(scene);
         stage.show();
     }
 
-    // ── Contenido central ────────────────────────────────────────────────────
-
-    /** Construye el VBox central con logo, separador y botones. */
-    private VBox crearContenidoCentral() {
-        VBox contenido = new VBox(0);
-        contenido.setAlignment(Pos.CENTER);
-        contenido.setPadding(new Insets(40));
+    private VBox createContent() {
+        VBox content = new VBox(0);
+        content.setAlignment(Pos.CENTER);
+        content.setPadding(new Insets(40));
 
         Label subtitle = components.createSubTitle();
         Label logo = components.createLogo();
@@ -73,11 +68,9 @@ public class MainScene {
         VBox.setMargin(tagline, new Insets(0, 0, 40, 0));
         VBox.setMargin(buttons, new Insets(0, 0, 30, 0));
 
-        contenido.getChildren().addAll(subtitle, logo, separator, tagline, buttons, footer);
+        content.getChildren().addAll(subtitle, logo, separator, tagline, buttons, footer);
 
-        // Animación de entrada
-        animationEffects.startAnimation(contenido);
-        return contenido;
+        animationEffects.startAnimation(content);
+        return content;
     }
-
 }

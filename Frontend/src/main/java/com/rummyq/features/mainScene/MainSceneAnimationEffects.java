@@ -4,16 +4,10 @@ import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class MainSceneAnimationEffects {
-
-    public void hoverEffect(Button btn, String hoverStyle, String normalStyle) {
-        btn.setOnMouseEntered(e -> btn.setStyle(hoverStyle));
-        btn.setOnMouseExited(e -> btn.setStyle(normalStyle));
-    }
 
     public void startAnimation(VBox content) {
         content.setOpacity(0);

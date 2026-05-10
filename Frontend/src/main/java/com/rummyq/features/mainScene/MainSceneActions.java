@@ -1,7 +1,7 @@
 package com.rummyq.features.mainScene;
 
 import com.rummyq.core.DialogReglas;
-import com.rummyq.view.PantallaLogin;
+import com.rummyq.view.LoginScene;
 
 import javafx.animation.FadeTransition;
 import javafx.stage.Stage;
@@ -28,12 +28,12 @@ public class MainSceneActions {
     public void showLoginScene() {
         System.out.println("► FadeOut to LoginScene...");
 
-        PantallaLogin loginScene = new PantallaLogin(stage);
+        LoginScene loginScene = new LoginScene(stage);
 
         FadeTransition fadeOut = new FadeTransition(Duration.millis(800), stage.getScene().getRoot());
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
-        fadeOut.setOnFinished(e -> loginScene.mostrar());
+        fadeOut.setOnFinished(e -> loginScene.showScreen());
         fadeOut.play();
     }
 
