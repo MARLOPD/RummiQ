@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 
 public class LoginSceneActions {
 
+    private static final String EMAIL_REGEX = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
+
     private Stage stage;
 
     public LoginSceneActions(Stage _stage) {
@@ -26,7 +28,8 @@ public class LoginSceneActions {
             ComponentFactory.showMessage("Por favor completa todos los campos.", false, messageLabel);
             return;
         }
-        if (!email.contains("@")) {
+
+        if (!email.matches(EMAIL_REGEX)) {
             ComponentFactory.showMessage("Ingresa un correo electrónico válido.", false, messageLabel);
             return;
         }
