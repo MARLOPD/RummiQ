@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import com.rummyq.backend.models.RegistrationRequirements;
-import com.rummyq.backend.services.UserLogin;
+import com.rummyq.backend.services.UserManagment;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -26,8 +26,8 @@ public class RegistroController {
             req.createdAt = Timestamp.from(Instant.now());
             req.lastLogin = Timestamp.from(Instant.now());
 
-            UserLogin service = new UserLogin();
-            service.LoginUser(req);
+            UserManagment service = new UserManagment();
+            service.UserSignUp(req);
 
             logger.info("Usuario registrado: {}", req.email);
             return "OK";
