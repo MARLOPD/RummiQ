@@ -1,0 +1,60 @@
+package com.rummyq.features.loginScene;
+
+import com.rummyq.api.AuthService;
+import com.rummyq.core.ComponentFactory;
+import com.rummyq.model.User;
+import com.rummyq.view.MainScene;
+import com.rummyq.view.PasswordRecoveryScene;
+import com.rummyq.view.SignUpScene;
+
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+public class LoginSceneActions {
+
+    private static final String EMAIL_REGEX = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
+
+    private Stage stage;
+    private final AuthService authService;
+
+    public LoginSceneActions(Stage _stage) {
+        stage = _stage;
+        this.authService = new AuthService();
+    }
+
+    public void onLoginClick(TextField emailField, PasswordField passField, Label messageLabel) {
+        String email = emailField.getText().trim();
+        String password = passField.getText();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            ComponentFactory.showMessage("Por favor completa todos los campos.", false, messageLabel);
+            return;
+        }
+
+        if (!email.matches(EMAIL_REGEX)) {
+            ComponentFactory.showMessage("Ingresa un correo electrónico válido.", false, messageLabel);
+            return;
+        }
+
+        User user = new User();
+        boolean areCredentialsValid = authService.login(email, password);
+
+        if (areCredentialsValid) {
+            ComponentFactory.showMessage("¡Bienvenido, " + user.getName() + "!", true, messageLabel);
+            new MainScene(stage).showScreen();
+        } else {
+            ComponentFactory.showMessage("Correo o contraseña incorrectos.", false, messageLabel);
+            LoginSceneAnimationEffects.shakeFields(passField);
+        }
+    }
+
+    public void openSignUpScene() {
+        new SignUpScene(stage).showScreen();
+    }
+
+    public void openRecoverScene() {
+        new PasswordRecoveryScene(stage).showScreen();
+    }
+}
