@@ -2,7 +2,7 @@ package com.rummyq.features.signUp;
 
 import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.SignUpForm;
-import com.rummyq.model.Usuario;
+import com.rummyq.model.User;
 import com.rummyq.view.LoginScene;
 
 import javafx.stage.Stage;
@@ -57,12 +57,12 @@ public class SignUpSceneActions {
         }
 
         // Crear y guardar usuario
-        Usuario nuevo = new Usuario(
+        User nuevo = new User(
                 email,
                 "",
                 "",
                 "");
-        nuevo.setNombre(name); // nombre en línea elegido por el jugador
+        nuevo.setName(name); // nombre en línea elegido por el jugador
 
         boolean registrado = false;
 

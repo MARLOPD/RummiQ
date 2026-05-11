@@ -1,7 +1,7 @@
 package com.rummyq.features.loginScene;
 
 import com.rummyq.core.ComponentFactory;
-import com.rummyq.model.Usuario;
+import com.rummyq.model.User;
 import com.rummyq.view.PasswordRecoveryScene;
 import com.rummyq.view.SignUpScene;
 
@@ -34,11 +34,11 @@ public class LoginSceneActions {
             return;
         }
 
-        Usuario user = new Usuario();
+        User user = new User();
         boolean areCredentialsValid = false;
 
         if (areCredentialsValid) {
-            ComponentFactory.showMessage("¡Bienvenido, " + user.getNombre() + "!", true, messageLabel);
+            ComponentFactory.showMessage("¡Bienvenido, " + user.getName() + "!", true, messageLabel);
             // new PantallaInicio(stage).mostrar();
         } else {
             ComponentFactory.showMessage("Correo o contraseña incorrectos.", false, messageLabel);
