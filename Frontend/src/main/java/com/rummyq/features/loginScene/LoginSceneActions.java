@@ -1,7 +1,9 @@
 package com.rummyq.features.loginScene;
 
+import com.rummyq.api.AuthService;
 import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.User;
+import com.rummyq.view.MainScene;
 import com.rummyq.view.PasswordRecoveryScene;
 import com.rummyq.view.SignUpScene;
 
@@ -15,9 +17,11 @@ public class LoginSceneActions {
     private static final String EMAIL_REGEX = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
 
     private Stage stage;
+    private final AuthService authService;
 
     public LoginSceneActions(Stage _stage) {
         stage = _stage;
+        this.authService = new AuthService();
     }
 
     public void onLoginClick(TextField emailField, PasswordField passField, Label messageLabel) {
@@ -35,11 +39,11 @@ public class LoginSceneActions {
         }
 
         User user = new User();
-        boolean areCredentialsValid = false;
+        boolean areCredentialsValid = authService.login(email, password);
 
         if (areCredentialsValid) {
             ComponentFactory.showMessage("¡Bienvenido, " + user.getName() + "!", true, messageLabel);
-            // new PantallaInicio(stage).mostrar();
+            new MainScene(stage).showScreen();
         } else {
             ComponentFactory.showMessage("Correo o contraseña incorrectos.", false, messageLabel);
             LoginSceneAnimationEffects.shakeFields(passField);

@@ -1,5 +1,6 @@
 package com.rummyq.features.signUp;
 
+import com.rummyq.api.RegistrationService;
 import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.SignUpForm;
 import com.rummyq.model.User;
@@ -59,12 +60,15 @@ public class SignUpSceneActions {
         // Crear y guardar usuario
         User nuevo = new User(
                 email,
+                password,
                 "",
-                "",
-                "");
+                answer);
         nuevo.setName(name); // nombre en línea elegido por el jugador
 
-        boolean registrado = false;
+        RegistrationService registrationService = new RegistrationService();
+        boolean response = registrationService.signUp(name, email, password);
+
+        boolean registrado = response;
 
         if (registrado) {
             ComponentFactory.showMessage("¡Cuenta creada exitosamente! Redirigiendo…", true, form.lblMessage);
