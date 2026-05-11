@@ -18,18 +18,16 @@ public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/signup")
-    public String signUp(@RequestBody RegistrationRequirements req) throws Exception {
+    public boolean signUp(@RequestBody RegistrationRequirements req) throws Exception {
         UserManagment signUp = new UserManagment();
         signUp.UserSignUp(req);
         logger.info("signup successful for user: " + req.email);
-        return "signup successful";
+        return true;
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequirements req) throws Exception {
+    public boolean login(@RequestBody LoginRequirements req) throws Exception {
         UserManagment logIn = new UserManagment();
-        logIn.UserLogIn(req);
-        logger.info("login successful for user: " + req.email);
-        return "login successful";
+        return logIn.UserLogIn(req);
     }
 }

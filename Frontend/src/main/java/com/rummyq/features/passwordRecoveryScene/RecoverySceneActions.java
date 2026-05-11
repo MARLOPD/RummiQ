@@ -1,7 +1,7 @@
 package com.rummyq.features.passwordRecoveryScene;
 
 import com.rummyq.core.ComponentFactory;
-import com.rummyq.model.Usuario;
+import com.rummyq.model.User;
 import com.rummyq.view.LoginScene;
 
 import javafx.animation.FadeTransition;
@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class RecoverySceneActions {
-    private Usuario usuarioEncontrado = null;
+    private User usuarioEncontrado = null;
 
     private Stage stage;
     private int step = 1;
@@ -41,7 +41,7 @@ public class RecoverySceneActions {
         }
 
         // Mostrar pregunta de seguridad
-        form.questionLabel.setText(usuarioEncontrado.getPreguntaSeguridad());
+        form.questionLabel.setText(usuarioEncontrado.getSecurityQuestion());
         showSection(form.answerSection);
         form.messageLabel.setText("");
         form.btnAccion.setText("Verificar respuesta");

@@ -1,6 +1,7 @@
 package com.rummyq;
 
 import com.rummyq.model.ScreenConfig;
+import com.rummyq.view.LoginScene;
 import com.rummyq.view.MainScene;
 
 import javafx.application.Application;
@@ -23,8 +24,8 @@ public class MainApp extends Application {
         // PantallaRegistro pantallaRegistro = new PantallaRegistro(stagePrincipal);
         // pantallaRegistro.mostrar();
 
-        MainScene mainScene = new MainScene(stagePrincipal);
-        mainScene.showScreen();
+        LoginScene firstScene = new LoginScene(stagePrincipal);
+        firstScene.showScreen();
         // PantallaRecuperacion pantallaRecuperacion = new
         // PantallaRecuperacion(stagePrincipal);
         // pantallaRecuperacion.mostrar();

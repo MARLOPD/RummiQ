@@ -13,16 +13,18 @@ public class UserManagment {
         userRepo.createUser(req);
     }
 
-    public void UserLogIn(LoginRequirements req) throws Exception {
+    public boolean UserLogIn(LoginRequirements req) throws Exception {
         UserRepository userRepo = new UserRepository();
         String storedHash = userRepo.getPasswordHash(req.email);
 
         if (storedHash == null) {
-            throw new Exception("Usuario no encontrado.");
+            return false;
         }
 
         if (!BCryptEncryption.Verify(req.passwordText, storedHash)) {
-            throw new Exception("Contraseña incorrecta.");
+            return false;
         }
+
+        return true;
     }
 }
