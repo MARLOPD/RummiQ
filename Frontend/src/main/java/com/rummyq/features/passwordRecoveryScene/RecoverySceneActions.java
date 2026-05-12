@@ -1,5 +1,6 @@
 package com.rummyq.features.passwordRecoveryScene;
 
+import com.rummyq.api.RecoveryPasswordService;
 import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.User;
 import com.rummyq.view.LoginScene;
@@ -34,7 +35,9 @@ public class RecoverySceneActions {
             return;
         }
 
-        usuarioEncontrado = null;
+        RecoveryPasswordService recoveryPasswordService = new RecoveryPasswordService();
+        usuarioEncontrado = recoveryPasswordService.findUserByEmail(email);
+
         if (usuarioEncontrado == null) {
             ComponentFactory.showMessage("No existe una cuenta con ese correo.", false, form.messageLabel);
             return;
@@ -55,7 +58,8 @@ public class RecoverySceneActions {
             return;
         }
 
-        boolean isCorrectAnswer = false;
+        RecoveryPasswordService recoveryPasswordService = new RecoveryPasswordService();
+        boolean isCorrectAnswer = recoveryPasswordService.verifyAnswer(usuarioEncontrado.getEmail(), answer);
         if (!isCorrectAnswer) {
             ComponentFactory.showMessage("Respuesta incorrecta. Intenta de nuevo.", false, form.messageLabel);
             return;
@@ -80,7 +84,8 @@ public class RecoverySceneActions {
             return;
         }
 
-        boolean actualizado = false;
+        RecoveryPasswordService recoveryPasswordService = new RecoveryPasswordService();
+        boolean actualizado = recoveryPasswordService.updatePassword(usuarioEncontrado.getEmail(), newPassword);
 
         if (actualizado) {
             ComponentFactory.showMessage("¡Contraseña actualizada! Redirigiendo al login…", true, form.messageLabel);

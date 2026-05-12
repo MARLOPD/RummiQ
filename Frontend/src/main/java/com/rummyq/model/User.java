@@ -1,26 +1,32 @@
 package com.rummyq.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Modelo que representa un usuario registrado en el sistema.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     private String email;
     private String password;
     private String securityQuestion;
+
+    @JsonProperty("answer")
     private String securityAnswer;
+
+    @JsonProperty("userName")
     private String name;
 
     public User() {
     }
 
-    public User(String email, String password,
-            String securityQuestion, String securityAnswer) {
+    public User(String name, String email, String password, String securityAnswer) {
+        this.name = name;
         this.email = email;
         this.password = password;
-        this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
-        this.name = email.split("@")[0];
     }
 
     public String getEmail() {
@@ -65,6 +71,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{email='" + email + "', name='" + name + "'}";
+        return "User{email='" + email + "', password='" + password + "', securityQuestion='" + securityQuestion
+                + "', securityAnswer='" + securityAnswer + "', name='" + name + "'}";
     }
 }

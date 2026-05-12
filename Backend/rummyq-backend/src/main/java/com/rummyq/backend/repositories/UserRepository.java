@@ -12,16 +12,18 @@ public class UserRepository {
     public void createUser(RegistrationRequirements req) throws Exception {
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO users (user_name, email, password_hash, created_at, last_login, status) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (user_name, email, password_hash, status, answer) VALUES (?, ?, ?, ?, ?)";
 
             PreparedStatement stmt = conn.prepareStatement(query);
 
             stmt.setString(1, req.userName);
             stmt.setString(2, req.email);
             stmt.setString(3, req.password);
-            stmt.setTimestamp(4, req.createdAt);
-            stmt.setTimestamp(5, req.lastLogin);
-            stmt.setString(6, req.status);
+            stmt.setString(4, req.status);
+            stmt.setString(5, req.answer);
+
+            System.err.println("user: " + req.userName + " email: " + req.email + " password: " + req.password
+                    + " status: " + req.status + " answer: " + req.answer);
 
             stmt.executeUpdate();
         } catch (Exception error) {

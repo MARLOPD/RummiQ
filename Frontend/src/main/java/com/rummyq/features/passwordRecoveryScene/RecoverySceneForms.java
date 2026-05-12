@@ -94,6 +94,8 @@ public class RecoverySceneForms {
         formInfo.questionLabel = questionLabel;
         formInfo.answerSection = answerSection;
         formInfo.newPasswordSection = newPasswordSection;
+        formInfo.messageLabel = messageLabel;
+        formInfo.btnAccion = btnAccion;
 
         btnAccion.setOnAction(e -> actions.nextStep(formInfo));
 
