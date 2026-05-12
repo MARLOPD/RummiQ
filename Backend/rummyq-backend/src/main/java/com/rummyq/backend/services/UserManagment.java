@@ -10,6 +10,7 @@ public class UserManagment {
     public void UserSignUp(RegistrationRequirements req) throws Exception {
         UserRepository userRepo = new UserRepository();
         req.password = BCryptEncryption.Encrypt(req.password);
+        req.answer = BCryptEncryption.Encrypt(req.answer);
         userRepo.createUser(req);
     }
 

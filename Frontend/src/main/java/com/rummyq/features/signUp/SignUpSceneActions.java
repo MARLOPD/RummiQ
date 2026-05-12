@@ -24,8 +24,6 @@ public class SignUpSceneActions {
         String confirmPassword = form.confirmPassword;
         String answer = form.answer;
 
-        System.out.println("Usuario: " + name + " Email: " + email + " Password: " + password
-                + " Confirmar Password: " + confirmPassword + " Respuesta: " + answer);
         // Validaciones
         if (name.isEmpty() || email.isEmpty() || password.isEmpty() || answer.isEmpty()) {
             ComponentFactory.showMessage("Por favor completa todos los campos.", false, form.lblMessage);
@@ -58,15 +56,14 @@ public class SignUpSceneActions {
         }
 
         // Crear y guardar usuario
-        User nuevo = new User(
+        User newUser = new User(
+                name,
                 email,
                 password,
-                "",
                 answer);
-        nuevo.setName(name); // nombre en línea elegido por el jugador
 
         RegistrationService registrationService = new RegistrationService();
-        boolean response = registrationService.signUp(name, email, password);
+        boolean response = registrationService.signUp(newUser);
 
         boolean registrado = response;
 

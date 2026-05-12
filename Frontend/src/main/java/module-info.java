@@ -8,7 +8,7 @@ module com.rummyq {
 
     opens com.rummyq to javafx.fxml;
     opens com.rummyq.view to javafx.fxml;
-    opens com.rummyq.model to javafx.fxml;
+    opens com.rummyq.model to javafx.fxml, com.fasterxml.jackson.databind;
     opens com.rummyq.api to com.fasterxml.jackson.databind;
 
     exports com.rummyq;

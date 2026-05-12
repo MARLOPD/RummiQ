@@ -1,6 +1,8 @@
 package com.rummyq.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rummyq.model.User;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -17,9 +19,9 @@ public class RegistrationService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public boolean signUp(String userName, String email, String password) {
+    public boolean signUp(User user) {
         try {
-            RegistrationRequest regReq = new RegistrationRequest(userName, email, password);
+            RegistrationRequest regReq = new RegistrationRequest(user);
             String json = objectMapper.writeValueAsString(regReq);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -39,6 +41,9 @@ public class RegistrationService {
     }
 
     // Clase interna para el JSON de registro
-    private record RegistrationRequest(String userName, String email, String password) {
+    private record RegistrationRequest(String userName, String email, String password, String answer, String status) {
+        public RegistrationRequest(User user) {
+            this(user.getName(), user.getEmail(), user.getPassword(), user.getSecurityAnswer(), "active");
+        }
     }
 }
