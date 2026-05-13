@@ -1,11 +1,19 @@
 package com.rummyq.core;
 
+import com.rummyq.features.gameScene.GameSceneIndividuals;
 import com.rummyq.model.ScreenConfig;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -23,7 +31,6 @@ public class ComponentFactory {
         Pane background = new Pane();
         background.setPrefSize(screenWidth, screenHeight);
 
-        // Degradado radial simulado con rectangulo + efecto
         Rectangle rect = new Rectangle(screenWidth, screenHeight);
         LinearGradient gradiente = new LinearGradient(
                 0.5, 0, 0.5, 1, true, CycleMethod.NO_CYCLE,
@@ -40,7 +47,6 @@ public class ComponentFactory {
         layerPane.setPrefSize(screenWidth, screenHeight);
         layerPane.setMouseTransparent(false);
 
-        // borde
         double stroke = 2.5;
 
         double rectWidth = screenWidth - (screenWidth * 0.08) - stroke;
@@ -48,7 +54,6 @@ public class ComponentFactory {
 
         Rectangle outside = createOutline(rectWidth, rectHeight, stroke, UIColors.COLOR_ORO_OSCURO, 60);
 
-        // Borde interior (más fino)
         stroke = 1;
         rectWidth = screenWidth - (screenWidth * 0.105) - 1;
         rectHeight = screenHeight - (screenHeight * 0.15) - 1;
@@ -97,6 +102,50 @@ public class ComponentFactory {
         return btn;
     }
 
+    public static Button createGhostGameButton(String imagePath, String text) {
+        Button btn = new Button(text);
+        btn.setPrefSize(75, 75);
+        btn.setMaxSize(75, 75);
+        btn.setContentDisplay(ContentDisplay.TOP);
+
+        Image iconImg = new Image(GameSceneIndividuals.class.getResourceAsStream(imagePath));
+        ImageView iconView = new ImageView(iconImg);
+        iconView.setFitWidth(32);
+        iconView.setFitHeight(32);
+        iconView.setPreserveRatio(true);
+        btn.setGraphic(iconView);
+        btn.setGraphicTextGap(5);
+
+        String base = "-fx-background-color: " + UIColors.toCSS(UIColors.COLOR_FELT_OSCURO.deriveColor(0, 1, 1, 0.85))
+                + ";"
+                + "-fx-background-radius: 18;" +
+                "-fx-border-color: " + UIColors.toCSS(UIColors.COLOR_ORO_OSCURO.deriveColor(0, 1, 1, 0.25)) + ";" +
+                "-fx-border-width: 1.5;" +
+                "-fx-border-radius: 18;" +
+                "-fx-cursor: hand;" +
+                "-fx-text-fill: " + UIColors.toCSS(UIColors.COLOR_CREMA) + ";" +
+                "-fx-font-family: Georgia;" +
+                "-fx-font-size: 10;" +
+                "-fx-font-weight: bold;";
+
+        String hover = "-fx-background-color: " + UIColors.toCSS(UIColors.COLOR_FELT_MEDIO.deriveColor(0, 1, 1, 0.9))
+                + ";" +
+                "-fx-background-radius: 18;" +
+                "-fx-border-color: " + UIColors.toCSS(UIColors.COLOR_ORO) + ";" +
+                "-fx-border-width: 1.5;" +
+                "-fx-border-radius: 18;" +
+                "-fx-cursor: hand;" +
+                "-fx-text-fill: " + UIColors.toCSS(UIColors.COLOR_CREMA) + ";" +
+                "-fx-font-family: Georgia;" +
+                "-fx-font-size: 10;" +
+                "-fx-font-weight: bold;";
+
+        btn.setStyle(base);
+        hoverEffect(btn, hover, base);
+
+        return btn;
+    }
+
     public static void hoverEffect(Button btn, String hoverStyle, String normalStyle) {
         btn.setOnMouseEntered(e -> btn.setStyle(hoverStyle));
         btn.setOnMouseExited(e -> btn.setStyle(normalStyle));
@@ -106,4 +155,60 @@ public class ComponentFactory {
         messageLabel.setText(text);
         messageLabel.setTextFill(isSuccess ? UIColors.VERDE_EXITO : UIColors.ROJO_ERROR);
     }
+
+    public static HBox createInformationBox(String label, String labelValue) {
+        HBox idRow = new HBox(6);
+        idRow.setAlignment(Pos.CENTER_LEFT);
+        idRow.setPrefHeight(screenHeight * 0.055);
+        idRow.setMaxWidth(screenWidth * 0.09);
+        idRow.setPrefWidth(screenWidth * 0.09);
+        idRow.setPadding(new Insets(0, 10, 0, 12));
+        idRow.setStyle(
+                "-fx-background-color: rgba(10, 35, 18, 0.88);" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-color: rgba(245, 234, 214, 0.2);" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 10;");
+
+        VBox idText = new VBox(1);
+        Label idTitle = new Label(label);
+        idTitle.setTextFill(Color.web("#a0b8a0"));
+        idTitle.setFont(Font.font("Georgia", 10));
+
+        Label idValue = new Label(labelValue);
+        idValue.setTextFill(UIColors.COLOR_CREMA);
+        idValue.setFont(Font.font("Georgia", FontWeight.BOLD, 13));
+
+        idText.getChildren().addAll(idTitle, idValue);
+
+        idRow.getChildren().addAll(idText);
+
+        return idRow;
+    }
+
+    public static HBox createUserPanel(String name) {
+        HBox panel = new HBox(6);
+        panel.setAlignment(Pos.CENTER);
+        panel.setPrefHeight(screenHeight * 0.08);
+        panel.setMaxHeight(screenHeight * 0.08);
+        panel.setMaxWidth(screenWidth * 0.15);
+        panel.setPrefWidth(screenWidth * 0.15);
+        panel.setPadding(new Insets(10));
+
+        panel.setStyle(
+                "-fx-background-color: rgba(10, 35, 18, 0.88);" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-color: " + UIColors.toCSS(UIColors.COLOR_ORO) + ";" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 10;");
+
+        Label nameLabel = new Label(name);
+        nameLabel.setTextFill(UIColors.COLOR_CREMA);
+        nameLabel.setFont(Font.font("Georgia", FontWeight.BOLD, 16));
+
+        panel.getChildren().add(nameLabel);
+
+        return panel;
+    }
+
 }

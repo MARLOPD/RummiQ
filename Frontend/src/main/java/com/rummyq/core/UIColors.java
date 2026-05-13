@@ -16,4 +16,12 @@ public class UIColors {
     // Validations Colors
     public static final Color ROJO_ERROR = Color.web("#e74c3c");
     public static final Color VERDE_EXITO = Color.web("#2ecc71");
+
+    public static String toCSS(Color c) {
+        return String.format(java.util.Locale.US, "rgba(%d,%d,%d,%.2f)",
+                (int) (c.getRed() * 255),
+                (int) (c.getGreen() * 255),
+                (int) (c.getBlue() * 255),
+                c.getOpacity());
+    }
 }
