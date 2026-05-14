@@ -1,4 +1,5 @@
 package com.rummyq.backend.services;
+
 import java.util.List;
 
 import com.rummyq.backend.models.Ficha;
@@ -7,20 +8,20 @@ import com.rummyq.backend.models.Jugador;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Bolsa {
+public class TileBag {
 
     private JugadorService jugadorService;
     private List<Ficha> fichas;
 
-    public Bolsa() {
+    public TileBag() {
         fichas = new ArrayList<>();
         generarFichas();
     }
 
     private void generarFichas() {
-        List<Ficha> rojas     = new ArrayList<>();
-        List<Ficha> azules    = new ArrayList<>();
-        List<Ficha> negras    = new ArrayList<>();
+        List<Ficha> rojas = new ArrayList<>();
+        List<Ficha> azules = new ArrayList<>();
+        List<Ficha> negras = new ArrayList<>();
         List<Ficha> amarillas = new ArrayList<>();
 
         for (int serie = 0; serie < 2; serie++) {
@@ -56,7 +57,7 @@ public class Bolsa {
     }
 
     public void repartir(List<Jugador> jugadores) {
-        
+
         for (Jugador jugador : jugadores) {
             for (int i = 0; i < 14; i++) {
                 jugadorService = new JugadorService(jugador);
@@ -67,10 +68,16 @@ public class Bolsa {
 
     // En Mazo
     public Ficha robarFicha() {
-        if (fichas.isEmpty()) return null; // indica que no hay fichas
+        if (fichas.isEmpty())
+            return null; // indica que no hay fichas
         return fichas.remove(0);
     }
 
-    public int cantidadRestante() { return fichas.size(); }
-    public boolean estaVacio() { return fichas.isEmpty(); }
+    public int cantidadRestante() {
+        return fichas.size();
+    }
+
+    public boolean estaVacio() {
+        return fichas.isEmpty();
+    }
 }

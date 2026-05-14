@@ -1,7 +1,7 @@
 package com.rummyq.backend.services;
+
 import com.rummyq.backend.models.Ficha;
 import com.rummyq.backend.models.Jugador;
-
 
 public class JugadorService {
 
@@ -17,11 +17,12 @@ public class JugadorService {
     }
 
     // En Jugador
-    public boolean robarFicha(Bolsa bolsa) {
+    public boolean robarFicha(TileBag bolsa) {
         Ficha ficha = bolsa.robarFicha();
-        if (ficha == null) return false; 
+        if (ficha == null)
+            return false;
         recibirFicha(ficha);
-        return true; 
+        return true;
     }
 
     public void descartarFicha(Ficha ficha) {
@@ -34,9 +35,10 @@ public class JugadorService {
 
     public boolean tieneFicha(Ficha ficha) {
         for (Ficha f : jugador.getMano()) {
-            if (f.esIgual(ficha)) return true;
+            if (f.esIgual(ficha))
+                return true;
         }
         return false;
     }
-   
+
 }
