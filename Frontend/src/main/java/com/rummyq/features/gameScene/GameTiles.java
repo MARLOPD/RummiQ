@@ -32,7 +32,7 @@ public class GameTiles {
         body.setStroke(Color.web("#d1c4a8"));
 
         DropShadow tileShadow = new DropShadow(3, Color.rgb(0, 0, 0, 0.5));
-        tile.setEffect(tileShadow);
+        body.setEffect(tileShadow);
 
         Label lblNumber = new Label(number);
         lblNumber.setFont(Font.font("Georgia", FontWeight.BOLD, 20));

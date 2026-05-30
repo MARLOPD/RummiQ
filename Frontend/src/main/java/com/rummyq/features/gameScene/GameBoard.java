@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Representa el tablero principal (la mesa) de RummyQ usando una matriz dinámica.
+ * Representa el tablero principal (la mesa) de RummyQ usando una matriz
+ * dinámica.
  * Permite colocar, mover y arrastrar fichas entre celdas. La matriz se expande
  * automáticamente si se colocan fichas cerca de los bordes.
  */
@@ -23,17 +24,17 @@ public class GameBoard extends ScrollPane {
 
     private static final int INITIAL_ROWS = 8;
     private static final int INITIAL_COLS = 16;
-    
+
     private static final double CELL_WIDTH = 50;
     private static final double CELL_HEIGHT = 65;
     private static final double CELL_GAP = 6;
 
     private final GridPane gridPane;
-    
+
     // Matriz lógica de celdas
     private int rows = INITIAL_ROWS;
     private int cols = INITIAL_COLS;
-    
+
     // Almacena las fichas en cada coordenada (fila, columna)
     private final Map<String, Node> cellTiles = new HashMap<>();
     private final Map<String, CellPane> cellPanes = new HashMap<>();
@@ -41,8 +42,26 @@ public class GameBoard extends ScrollPane {
     // Referencia estática para el drag-and-drop de fichas
     private static Node draggedTile = null;
     private static String draggedSourceKey = null; // null si viene de la mano
+    private static GameBoard instance = null;
+
+    public static GameBoard getInstance() {
+        return instance;
+    }
+
+    public static Node getDraggedTile() {
+        return draggedTile;
+    }
+
+    public static String getDraggedSourceKey() {
+        return draggedSourceKey;
+    }
+
+    public void removerFicha(Node tile) {
+        removerFichaDeMatriz(tile);
+    }
 
     public GameBoard() {
+        instance = this;
         gridPane = new GridPane();
         gridPane.setHgap(CELL_GAP);
         gridPane.setVgap(CELL_GAP);
@@ -54,24 +73,121 @@ public class GameBoard extends ScrollPane {
         this.setContent(gridPane);
         this.setFitToWidth(true);
         this.setFitToHeight(true);
-        this.setPannable(true); // Permite arrastrar el tablero completo para hacer scroll
+        // setPannable(false): el modo pannable intercepta eventos de arrastre del mouse
+        // impidiendo que lleguen a las CellPane hijas, rompiendo el Drag-and-Drop.
+        this.setPannable(false);
         this.setStyle(
-            "-fx-background: transparent;" +
-            "-fx-background-color: transparent;" +
-            "-fx-border-color: transparent;"
+                "-fx-background: transparent;" +
+                        "-fx-background-color: transparent;" +
+                        "-fx-border-color: transparent;" +
+                        "-fx-text-background-color: inherit;" // ← esta línea
         );
 
         // Ocultar scrollbars o darles estilo sutil
         this.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
         this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
+        // Reenviar drag events desde el ScrollPane y el GridPane hacia las CellPane
+        // El ScrollPane tiene capas internas (viewport/skin) que pueden absorber
+        // eventos;
+        // al aceptar aquí aseguramos que los eventos lleguen a las celdas.
+        this.setOnDragOver(e -> {
+            if (draggedTile != null) {
+                e.acceptTransferModes(TransferMode.MOVE);
+            }
+            // No consumir: dejar que el evento burbujee hacia los CellPane
+        });
+
+        // En el constructor, reemplaza el setOnDragOver/setOnDragDropped del ScrollPane
+        // por estos dos handlers en el gridPane:
+
+        gridPane.setOnDragOver(e -> {
+            System.out.println("[DEBUG] *** GRIDPANE DragOver ***"); // <-- distinguible
+            if (draggedTile != null) {
+                e.acceptTransferModes(TransferMode.MOVE);
+            }
+            e.consume();
+        });
+
+        gridPane.setOnDragDropped(e -> {
+            if (draggedTile == null)
+                return;
+
+            // Buscar qué CellPane está bajo el cursor
+            javafx.geometry.Point2D local = gridPane.sceneToLocal(e.getSceneX(), e.getSceneY());
+
+            CellPane targetCell = null;
+            for (Map.Entry<String, CellPane> entry : cellPanes.entrySet()) {
+                if (entry.getValue().getBoundsInParent().contains(local)) {
+                    targetCell = entry.getValue();
+                    break;
+                }
+            }
+
+            boolean success = false;
+            if (targetCell != null && !cellTiles.containsKey(getCellKey(targetCell.r, targetCell.c))) {
+
+                final StackPane tile = (StackPane) draggedTile;
+                final String srcKey = draggedSourceKey;
+                final CellPane dest = targetCell;
+
+                if (srcKey != null) {
+                    cellTiles.remove(srcKey);
+                    CellPane sourceCell = cellPanes.get(srcKey);
+                    if (sourceCell != null)
+                        sourceCell.clearTile();
+                } else if (tile.getParent() instanceof javafx.scene.layout.Pane) {
+                    ((javafx.scene.layout.Pane) tile.getParent()).getChildren().remove(tile);
+                }
+
+                colocarFicha(tile, dest.r, dest.c);
+                success = true;
+            }
+
+            e.setDropCompleted(success);
+            e.consume();
+        });
         // Inicializar la cuadrícula
         reconstruirGrid();
+
+        // DEBUG TEMPORAL
+        javafx.application.Platform.runLater(() -> {
+            System.out.println("[DEBUG] ScrollPane bounds: " + this.getBoundsInLocal());
+            System.out.println("[DEBUG] GridPane bounds: " + gridPane.getBoundsInLocal());
+            System.out.println("[DEBUG] GridPane visible: " + gridPane.isVisible());
+            System.out.println("[DEBUG] GridPane children count: " + gridPane.getChildren().size());
+
+            // Ver toda la jerarquía de nodos encima del GameBoard
+            javafx.scene.Node n = this.getParent();
+            while (n != null) {
+                System.out.println("[DEBUG] Parent node: " + n.getClass().getSimpleName() +
+                        " mouseTransparent=" + n.isMouseTransparent() +
+                        " pickOnBounds=" + n.isPickOnBounds());
+                n = n.getParent();
+            }
+        });
+
+        this.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            if (newSkin != null) {
+                Node viewport = this.lookup(".viewport");
+                if (viewport != null) {
+                    viewport.setPickOnBounds(false); // ← esta es la línea clave
+                    viewport.setOnDragOver(e -> {
+                        if (draggedTile != null) {
+                            e.acceptTransferModes(TransferMode.MOVE);
+                        }
+                        // NO consumir
+                    });
+                }
+            }
+        });
+
     }
 
     /**
      * Construye o reconstruye los componentes visuales de la cuadrícula
-     * basándose en las dimensiones rows y cols actuales, preservando las fichas existentes.
+     * basándose en las dimensiones rows y cols actuales, preservando las fichas
+     * existentes.
      */
     private void reconstruirGrid() {
         gridPane.getChildren().clear();
@@ -80,7 +196,7 @@ public class GameBoard extends ScrollPane {
             for (int c = 0; c < cols; c++) {
                 String key = getCellKey(r, c);
                 CellPane cell = cellPanes.computeIfAbsent(key, k -> new CellPane(finalRow(k), finalCol(k)));
-                
+
                 // Si la celda tenía una ficha, volver a ponerla
                 Node tile = cellTiles.get(key);
                 if (tile != null) {
@@ -109,12 +225,11 @@ public class GameBoard extends ScrollPane {
     /**
      * Coloca una ficha en una celda específica.
      */
-    public void colocarFicha(Node tile, int row, int col) {
+    public void colocarFicha(StackPane tile, int row, int col) {
         // Asegurar que la celda está dentro del rango
         asegurarRango(row, col);
-
         String key = getCellKey(row, col);
-        
+
         // Quitar de la celda vieja si estaba en el tablero
         removerFichaDeMatriz(tile);
 
@@ -151,7 +266,8 @@ public class GameBoard extends ScrollPane {
     }
 
     /**
-     * Asegura que las dimensiones de la matriz alcancen para contener la celda (row, col).
+     * Asegura que las dimensiones de la matriz alcancen para contener la celda
+     * (row, col).
      */
     private void asegurarRango(int row, int col) {
         boolean cambio = false;
@@ -187,25 +303,29 @@ public class GameBoard extends ScrollPane {
     }
 
     /**
-     * Configura la ficha como origen para poder ser arrastrada a otra celda del tablero.
+     * Configura la ficha como origen para poder ser arrastrada a otra celda del
+     * tablero.
      */
-    private void configurarDragSource(Node tile, String sourceKey) {
+    private void configurarDragSource(StackPane tile, String sourceKey) {
         tile.setOnDragDetected(e -> {
+            System.out.println("[DEBUG] Drag detected from board tile: " + tile + " key: " + sourceKey);
             Dragboard db = tile.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
-            
+
             // Pasamos un identificador simple
             content.putString("TABLERO_TILE");
             db.setContent(content);
 
             draggedTile = tile;
             draggedSourceKey = sourceKey;
-            
+
             tile.setOpacity(0.5); // Efecto visual al arrastrar
             e.consume();
         });
 
         tile.setOnDragDone(e -> {
+            System.out.println("[DEBUG] Drag done for board tile: " + tile + ", accepted: " + e.isAccepted()
+                    + ", mode: " + e.getTransferMode());
             tile.setOpacity(1.0);
             draggedTile = null;
             draggedSourceKey = null;
@@ -214,10 +334,12 @@ public class GameBoard extends ScrollPane {
     }
 
     /**
-     * Permite registrar fichas externas (ej. de la mano del jugador) como arrastrables hacia el tablero.
+     * Permite registrar fichas externas (ej. de la mano del jugador) como
+     * arrastrables hacia el tablero.
      */
     public static void habilitarDragDesdeMano(Node tile) {
         tile.setOnDragDetected(e -> {
+            System.out.println("[DEBUG] Drag detected from hand tile: " + tile);
             Dragboard db = tile.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
             content.putString("MANO_TILE");
@@ -231,6 +353,8 @@ public class GameBoard extends ScrollPane {
         });
 
         tile.setOnDragDone(e -> {
+            System.out.println("[DEBUG] Drag done for hand tile: " + tile + ", accepted: " + e.isAccepted() + ", mode: "
+                    + e.getTransferMode());
             tile.setOpacity(1.0);
             draggedTile = null;
             draggedSourceKey = null;
@@ -281,6 +405,8 @@ public class GameBoard extends ScrollPane {
             // ── Implementación de Drag and Drop (Recepción) ───────────────────
 
             this.setOnDragOver(e -> {
+                System.out.println("[DEBUG] CellPane DragOver - Source: " + e.getGestureSource() + ", cell size: "
+                        + getChildren().size() + ", draggedTile: " + draggedTile);
                 if (e.getGestureSource() != this && getChildren().size() == 1) {
                     // Acepta si viene del tablero o de la mano
                     e.acceptTransferModes(TransferMode.MOVE);
@@ -305,9 +431,10 @@ public class GameBoard extends ScrollPane {
             });
 
             this.setOnDragDropped(e -> {
+                System.out.println("[DEBUG] CellPane DragDropped - draggedTile: " + draggedTile);
                 boolean success = false;
                 if (draggedTile != null && getChildren().size() == 1) {
-                    
+
                     // Si venía de otra celda en el tablero, limpiar esa celda
                     if (draggedSourceKey != null) {
                         cellTiles.remove(draggedSourceKey);
@@ -316,7 +443,8 @@ public class GameBoard extends ScrollPane {
                             sourceCell.clearTile();
                         }
                     } else {
-                        // Venía de la mano (fuera del tablero), remover de su contenedor visual original
+                        // Venía de la mano (fuera del tablero), remover de su contenedor visual
+                        // original
                         if (draggedTile.getParent() instanceof javafx.scene.layout.Pane) {
                             // Remover del HBox/Pane donde estaba la mano
                             ((javafx.scene.layout.Pane) draggedTile.getParent()).getChildren().remove(draggedTile);
@@ -324,9 +452,10 @@ public class GameBoard extends ScrollPane {
                     }
 
                     // Colocar en esta nueva celda
-                    colocarFicha(draggedTile, r, c);
+                    colocarFicha((StackPane) draggedTile, r, c);
                     success = true;
                 }
+                System.out.println("[DEBUG] CellPane DragDropped success: " + success);
                 e.setDropCompleted(success);
                 e.consume();
             });
@@ -339,7 +468,7 @@ public class GameBoard extends ScrollPane {
             }
             // Agregar la ficha encima del fondo discontínuo
             this.getChildren().add(tile);
-            
+
             // Centrar
             StackPane.setAlignment(tile, Pos.CENTER);
         }

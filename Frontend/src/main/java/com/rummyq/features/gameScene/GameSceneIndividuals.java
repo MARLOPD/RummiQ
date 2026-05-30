@@ -19,6 +19,10 @@ import javafx.scene.text.Font;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.Node;
+import javafx.scene.input.TransferMode;
+import javafx.scene.input.DragEvent;
+import javafx.event.EventHandler;
 import java.util.Random;
 
 public class GameSceneIndividuals {
@@ -88,6 +92,64 @@ public class GameSceneIndividuals {
             GameBoard.habilitarDragDesdeMano(tile);
             tilesContainer.getChildren().add(tile);
         }
+
+        // Habilitar la recepción de arrastre en toda la fila de la mano (rowStack, base y container) para devolver o reordenar
+        EventHandler<DragEvent> dragOverHandler = e -> {
+            System.out.println("[DEBUG] DragOver - Source: " + e.getGestureSource() + ", draggedTile: " + GameBoard.getDraggedTile());
+            if (GameBoard.getDraggedTile() != null) {
+                e.acceptTransferModes(TransferMode.MOVE);
+            }
+            e.consume();
+        };
+
+        EventHandler<DragEvent> dragDroppedHandler = e -> {
+            System.out.println("[DEBUG] DragDropped - draggedTile: " + GameBoard.getDraggedTile());
+            Node tile = GameBoard.getDraggedTile();
+            boolean success = false;
+            if (tile != null) {
+                String sourceKey = GameBoard.getDraggedSourceKey();
+                if (sourceKey != null) {
+                    GameBoard board = GameBoard.getInstance();
+                    if (board != null) {
+                        board.removerFicha(tile);
+                    }
+                } else {
+                    if (tile.getParent() instanceof Pane) {
+                        ((Pane) tile.getParent()).getChildren().remove(tile);
+                    }
+                }
+
+                // Convertir la coordenada X del drop al espacio de tilesContainer
+                javafx.geometry.Point2D localPoint = tilesContainer.sceneToLocal(e.getSceneX(), e.getSceneY());
+                double dropX = localPoint.getX();
+
+                int insertIndex = tilesContainer.getChildren().size();
+                for (int i = 0; i < tilesContainer.getChildren().size(); i++) {
+                    Node child = tilesContainer.getChildren().get(i);
+                    double childCenterX = child.getBoundsInParent().getCenterX();
+                    if (dropX < childCenterX) {
+                        insertIndex = i;
+                        break;
+                    }
+                }
+
+                tilesContainer.getChildren().add(insertIndex, tile);
+                GameBoard.habilitarDragDesdeMano(tile);
+                success = true;
+            }
+            System.out.println("[DEBUG] DragDropped success: " + success);
+            e.setDropCompleted(success);
+            e.consume();
+        };
+
+        rowStack.setOnDragOver(dragOverHandler);
+        rowStack.setOnDragDropped(dragDroppedHandler);
+
+        tilesContainer.setOnDragOver(dragOverHandler);
+        tilesContainer.setOnDragDropped(dragDroppedHandler);
+
+        base.setOnDragOver(dragOverHandler);
+        base.setOnDragDropped(dragDroppedHandler);
 
         rowStack.getChildren().addAll(base, highlight, tilesContainer);
 

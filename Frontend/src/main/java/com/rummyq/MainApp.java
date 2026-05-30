@@ -1,6 +1,7 @@
 package com.rummyq;
 
 import com.rummyq.model.ScreenConfig;
+import com.rummyq.view.GameScene;
 import com.rummyq.view.LoginScene;
 
 import javafx.application.Application;
@@ -19,7 +20,7 @@ public class MainApp extends Application {
         stagePrincipal.setHeight(ScreenConfig.getScreenHeight());
         stagePrincipal.setResizable(false);
 
-        LoginScene firstScene = new LoginScene(stagePrincipal);
+        GameScene firstScene = new GameScene(stagePrincipal);
         firstScene.showScreen();
     }
 

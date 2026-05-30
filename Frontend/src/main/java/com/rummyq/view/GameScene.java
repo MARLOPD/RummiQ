@@ -42,8 +42,14 @@ public class GameScene {
 
     private StackPane createContent() {
         StackPane root = new StackPane();
+        root.setPickOnBounds(false);
+
+        // Y a cada uno de los que van encima del gameBoard:
+        Pane playerBoard = GameSceneIndividuals.createPlayerBoard();
+        playerBoard.setPickOnBounds(false);
 
         StackPane secretTile = new StackPane();
+        secretTile.setPickOnBounds(false);
         HBox tilesBox = GameTiles.secretTilesOnTheTable(6);
 
         secretTile.setMaxSize(tilesBox.getWidth(), tilesBox.getHeight());
@@ -54,6 +60,8 @@ public class GameScene {
         secretTile.getChildren().add(tilesBox);
 
         VBox topLeft = new VBox(8);
+        topLeft.setPickOnBounds(false);
+
         topLeft.setMaxSize(screenWidth * 0.8, screenHeight * 0.2);
         topLeft.setPrefSize(screenWidth * 0.8, screenHeight * 0.2);
         topLeft.setPadding(new Insets(screenHeight * 0.065, 0, 0, screenWidth * 0.065));
@@ -62,6 +70,8 @@ public class GameScene {
         StackPane.setAlignment(topLeft, Pos.TOP_LEFT);
 
         Pane topRightButtons = GameSceneIndividuals.createTopRightButtons();
+        topRightButtons.setPickOnBounds(false);
+
         StackPane.setAlignment(topRightButtons, Pos.TOP_RIGHT);
         StackPane.setMargin(topRightButtons, new Insets(screenHeight * 0.04, screenWidth * 0.035, 0, 0));
 
@@ -70,12 +80,15 @@ public class GameScene {
         StackPane.setMargin(chatButton, new Insets(0, 0, screenHeight * 0.065, screenWidth * 0.065));
 
         Pane player1 = ComponentFactory.createUserPanel("Jugador 1");
+        player1.setPickOnBounds(false);
         com.rummyq.features.gameScene.PlayerPositions.positionUserPanel(player1, 1);
 
         Pane player2 = ComponentFactory.createUserPanel("Jugador 2");
+        player2.setPickOnBounds(false);
         com.rummyq.features.gameScene.PlayerPositions.positionUserPanel(player2, 2);
 
         Pane player3 = ComponentFactory.createUserPanel("Jugador 3");
+        player3.setPickOnBounds(false);
         com.rummyq.features.gameScene.PlayerPositions.positionUserPanel(player3, 3);
 
         GameBoard gameBoard = new GameBoard();
@@ -97,6 +110,8 @@ public class GameScene {
                 player2,
                 player3);
 
+        root.getChildren().forEach(node -> node.setPickOnBounds(false));
+        root.setPickOnBounds(false);
         return root;
     }
 }
