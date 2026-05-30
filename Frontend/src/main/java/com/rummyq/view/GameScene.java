@@ -4,6 +4,7 @@ package com.rummyq.view;
 import com.rummyq.features.gameScene.GameSceneActions;
 import com.rummyq.features.gameScene.GameSceneIndividuals;
 import com.rummyq.features.gameScene.GameTiles;
+import com.rummyq.features.gameScene.GameBoard;
 import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.ScreenConfig;
 
@@ -77,9 +78,16 @@ public class GameScene {
         Pane player3 = ComponentFactory.createUserPanel("Jugador 3");
         com.rummyq.features.gameScene.PlayerPositions.positionUserPanel(player3, 3);
 
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.setMaxSize(screenWidth * 0.58, screenHeight * 0.44);
+        gameBoard.setPrefSize(screenWidth * 0.58, screenHeight * 0.44);
+        StackPane.setAlignment(gameBoard, Pos.CENTER);
+        StackPane.setMargin(gameBoard, new Insets(0, 0, screenHeight * 0.12, 0));
+
         root.getChildren().addAll(
                 ComponentFactory.createBackground(),
                 ComponentFactory.createDecoratedBorder(),
+                gameBoard,
                 GameSceneIndividuals.createPlayerBoard(),
                 secretTile,
                 topLeft,

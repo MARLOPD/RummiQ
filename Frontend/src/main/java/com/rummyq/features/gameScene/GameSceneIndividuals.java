@@ -83,9 +83,10 @@ public class GameSceneIndividuals {
         Color[] colors = { Color.RED, Color.BLUE, Color.BLACK, Color.web("#FFD700") };
 
         for (int i = 0; i < tileCount; i++) {
-            tilesContainer.getChildren()
-                    .add(GameTiles.createTile(String.valueOf(rand.nextInt(13) + 1),
-                            colors[rand.nextInt(colors.length)]));
+            StackPane tile = GameTiles.createTile(String.valueOf(rand.nextInt(13) + 1),
+                    colors[rand.nextInt(colors.length)]);
+            GameBoard.habilitarDragDesdeMano(tile);
+            tilesContainer.getChildren().add(tile);
         }
 
         rowStack.getChildren().addAll(base, highlight, tilesContainer);
