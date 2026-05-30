@@ -10,7 +10,6 @@ import java.util.Collections;
 
 public class TileBag {
 
-    private JugadorService jugadorService;
     private List<Ficha> fichas;
 
     public TileBag() {
@@ -57,11 +56,10 @@ public class TileBag {
     }
 
     public void repartir(List<Jugador> jugadores) {
-
         for (Jugador jugador : jugadores) {
             for (int i = 0; i < 14; i++) {
-                jugadorService = new JugadorService(jugador);
-                jugadorService.recibirFicha(fichas.remove(0));
+                Ficha f = fichas.remove(0);
+                jugador.agregarFicha(f);
             }
         }
     }
