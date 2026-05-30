@@ -33,6 +33,8 @@ public class MainScene {
 
     public MainScene(Stage stage) {
         this.stage = stage;
+        com.rummyq.websocket.GameWebSocketClient.getInstance().connect("ws://localhost:8080/ws/game");
+
         actions = new MainSceneActions(stage);
         components = new MainSceneIndividuals(actions);
     }

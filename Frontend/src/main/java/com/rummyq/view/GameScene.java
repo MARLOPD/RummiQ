@@ -6,7 +6,9 @@ import com.rummyq.features.gameScene.GameSceneIndividuals;
 import com.rummyq.features.gameScene.GameTiles;
 import com.rummyq.features.gameScene.GameBoard;
 import com.rummyq.core.ComponentFactory;
+import com.rummyq.core.WaitingRoom;
 import com.rummyq.model.ScreenConfig;
+import com.rummyq.model.User;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,9 +37,21 @@ public class GameScene {
 
     public void showScreen() {
         StackPane root = createContent();
+
+        StackPane shadow = new StackPane();
+        shadow.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7);  ");
+
+        shadow.setMaxSize(screenWidth, screenHeight);
+        shadow.setPrefSize(screenWidth, screenHeight);
+        StackPane.setAlignment(shadow, Pos.CENTER);
+        root.getChildren().add(shadow);
+
         Scene scene = new Scene(root, screenWidth, screenHeight);
         stage.setScene(scene);
         stage.show();
+
+        WaitingRoom waitingRoom = new WaitingRoom(stage, User.getEmail());
+        waitingRoom.mostrar(shadow);
     }
 
     private StackPane createContent() {
@@ -79,6 +93,17 @@ public class GameScene {
         StackPane.setAlignment(chatButton, Pos.BOTTOM_LEFT);
         StackPane.setMargin(chatButton, new Insets(0, 0, screenHeight * 0.065, screenWidth * 0.065));
 
+        Button btnFinalizarTurno = ComponentFactory.createPrimaryButton("Finalizar Turno");
+        StackPane.setAlignment(btnFinalizarTurno, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(btnFinalizarTurno, new Insets(0, screenWidth * 0.065, screenHeight * 0.065, 0));
+        btnFinalizarTurno.setOnAction(e -> {
+            GameBoard board = GameBoard.getInstance();
+            if (board != null) {
+                var grupos = board.obtenerGrupos();
+                com.rummyq.websocket.GameWebSocketClient.getInstance().enviarJugada(grupos);
+            }
+        });
+
         Pane player1 = ComponentFactory.createUserPanel("Jugador 1");
         player1.setPickOnBounds(false);
         com.rummyq.features.gameScene.PlayerPositions.positionUserPanel(player1, 1);
@@ -106,9 +131,11 @@ public class GameScene {
                 topLeft,
                 topRightButtons,
                 chatButton,
-                player1,
-                player2,
-                player3);
+                btnFinalizarTurno
+        // player1,
+        // player2,
+        // player3
+        );
 
         root.getChildren().forEach(node -> node.setPickOnBounds(false));
         root.setPickOnBounds(false);

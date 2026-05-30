@@ -96,15 +96,17 @@ public class MainSceneIndividuals {
 
     public VBox createButtons() {
         Button btnNuevaPartida = ComponentFactory.createPrimaryButton("▶   Nueva Partida");
+        Button btnUnirse = ComponentFactory.createPrimaryButton("▶   Unirse a una Partida");
         Button btnComoJugar = createSecondaryButton("¿Cómo jugar?");
         Button btnSalir = createGhostButton("Salir");
 
         // Actions
         btnNuevaPartida.setOnAction(e -> actions.startGame());
+        btnUnirse.setOnAction(e -> actions.joinGame());
         btnComoJugar.setOnAction(e -> actions.showRules());
         btnSalir.setOnAction(e -> actions.exitGame());
 
-        VBox vbox = new VBox(12, btnNuevaPartida, btnComoJugar, btnSalir);
+        VBox vbox = new VBox(12, btnNuevaPartida, btnUnirse, btnComoJugar, btnSalir);
         vbox.setAlignment(Pos.CENTER);
         vbox.setMaxWidth(260);
         return vbox;

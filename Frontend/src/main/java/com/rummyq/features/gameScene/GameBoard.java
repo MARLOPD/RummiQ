@@ -11,8 +11,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.rummyq.websocket.dto.TileDTO;
+import javafx.scene.control.Label;
 
 /**
  * Representa el tablero principal (la mesa) de RummyQ usando una matriz
@@ -60,6 +65,76 @@ public class GameBoard extends ScrollPane {
         removerFichaDeMatriz(tile);
     }
 
+    /**
+     * Extrae las secuencias contiguas de fichas (grupos) que se encuentran de forma
+     * horizontal en el tablero.
+     */
+    public List<List<TileDTO>> obtenerGrupos() {
+        List<List<TileDTO>> groups = new ArrayList<>();
+
+        for (int r = 0; r < rows; r++) {
+            List<TileDTO> currentGroup = new ArrayList<>();
+            for (int c = 0; c < cols; c++) {
+                String key = getCellKey(r, c);
+                Node tileNode = cellTiles.get(key);
+
+                if (tileNode instanceof StackPane) {
+                    TileDTO tileDto = extractTileFromNode((StackPane) tileNode);
+                    if (tileDto != null) {
+                        currentGroup.add(tileDto);
+                    }
+                } else {
+                    if (currentGroup.size() > 1) { // Guardamos secuencias de 2 o más (el backend validará si son 3 o
+                                                   // más)
+                        groups.add(new ArrayList<>(currentGroup));
+                    }
+                    currentGroup.clear();
+                }
+            }
+            if (currentGroup.size() > 1) {
+                groups.add(new ArrayList<>(currentGroup));
+            }
+        }
+
+        return groups;
+    }
+
+    private TileDTO extractTileFromNode(StackPane tilePane) {
+        if (tilePane.getChildren().size() > 1 && tilePane.getChildren().get(1) instanceof Label) {
+            Label lbl = (Label) tilePane.getChildren().get(1);
+            String numberStr = lbl.getText();
+            Color colorFill = (Color) lbl.getTextFill();
+
+            Integer number = null;
+            boolean isJoker = false;
+
+            if (numberStr.equalsIgnoreCase("J") || numberStr.equalsIgnoreCase("Comodin")) {
+                isJoker = true;
+                number = 0;
+            } else {
+                try {
+                    number = Integer.parseInt(numberStr);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+
+            String colorStr = "NEGRO";
+            if (colorFill.equals(Color.RED)) {
+                colorStr = "ROJO";
+            } else if (colorFill.equals(Color.BLUE)) {
+                colorStr = "AZUL";
+            } else if (colorFill.equals(Color.BLACK)) {
+                colorStr = "NEGRO";
+            } else {
+                colorStr = "AMARILLO";
+            }
+
+            return new TileDTO(number, colorStr, isJoker);
+        }
+        return null;
+    }
+
     public GameBoard() {
         instance = this;
         gridPane = new GridPane();
@@ -102,7 +177,6 @@ public class GameBoard extends ScrollPane {
         // por estos dos handlers en el gridPane:
 
         gridPane.setOnDragOver(e -> {
-            System.out.println("[DEBUG] *** GRIDPANE DragOver ***"); // <-- distinguible
             if (draggedTile != null) {
                 e.acceptTransferModes(TransferMode.MOVE);
             }
@@ -152,17 +226,9 @@ public class GameBoard extends ScrollPane {
 
         // DEBUG TEMPORAL
         javafx.application.Platform.runLater(() -> {
-            System.out.println("[DEBUG] ScrollPane bounds: " + this.getBoundsInLocal());
-            System.out.println("[DEBUG] GridPane bounds: " + gridPane.getBoundsInLocal());
-            System.out.println("[DEBUG] GridPane visible: " + gridPane.isVisible());
-            System.out.println("[DEBUG] GridPane children count: " + gridPane.getChildren().size());
-
             // Ver toda la jerarquía de nodos encima del GameBoard
             javafx.scene.Node n = this.getParent();
             while (n != null) {
-                System.out.println("[DEBUG] Parent node: " + n.getClass().getSimpleName() +
-                        " mouseTransparent=" + n.isMouseTransparent() +
-                        " pickOnBounds=" + n.isPickOnBounds());
                 n = n.getParent();
             }
         });
@@ -308,7 +374,6 @@ public class GameBoard extends ScrollPane {
      */
     private void configurarDragSource(StackPane tile, String sourceKey) {
         tile.setOnDragDetected(e -> {
-            System.out.println("[DEBUG] Drag detected from board tile: " + tile + " key: " + sourceKey);
             Dragboard db = tile.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
 
@@ -324,8 +389,6 @@ public class GameBoard extends ScrollPane {
         });
 
         tile.setOnDragDone(e -> {
-            System.out.println("[DEBUG] Drag done for board tile: " + tile + ", accepted: " + e.isAccepted()
-                    + ", mode: " + e.getTransferMode());
             tile.setOpacity(1.0);
             draggedTile = null;
             draggedSourceKey = null;
@@ -339,7 +402,6 @@ public class GameBoard extends ScrollPane {
      */
     public static void habilitarDragDesdeMano(Node tile) {
         tile.setOnDragDetected(e -> {
-            System.out.println("[DEBUG] Drag detected from hand tile: " + tile);
             Dragboard db = tile.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
             content.putString("MANO_TILE");
@@ -353,8 +415,6 @@ public class GameBoard extends ScrollPane {
         });
 
         tile.setOnDragDone(e -> {
-            System.out.println("[DEBUG] Drag done for hand tile: " + tile + ", accepted: " + e.isAccepted() + ", mode: "
-                    + e.getTransferMode());
             tile.setOpacity(1.0);
             draggedTile = null;
             draggedSourceKey = null;
@@ -405,8 +465,6 @@ public class GameBoard extends ScrollPane {
             // ── Implementación de Drag and Drop (Recepción) ───────────────────
 
             this.setOnDragOver(e -> {
-                System.out.println("[DEBUG] CellPane DragOver - Source: " + e.getGestureSource() + ", cell size: "
-                        + getChildren().size() + ", draggedTile: " + draggedTile);
                 if (e.getGestureSource() != this && getChildren().size() == 1) {
                     // Acepta si viene del tablero o de la mano
                     e.acceptTransferModes(TransferMode.MOVE);
@@ -431,7 +489,6 @@ public class GameBoard extends ScrollPane {
             });
 
             this.setOnDragDropped(e -> {
-                System.out.println("[DEBUG] CellPane DragDropped - draggedTile: " + draggedTile);
                 boolean success = false;
                 if (draggedTile != null && getChildren().size() == 1) {
 
@@ -455,7 +512,6 @@ public class GameBoard extends ScrollPane {
                     colocarFicha((StackPane) draggedTile, r, c);
                     success = true;
                 }
-                System.out.println("[DEBUG] CellPane DragDropped success: " + success);
                 e.setDropCompleted(success);
                 e.consume();
             });

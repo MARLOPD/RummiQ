@@ -9,64 +9,64 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
-    private String email;
-    private String password;
-    private String securityQuestion;
+    private static String email;
+    private static String password;
+    private static String securityQuestion;
 
     @JsonProperty("answer")
-    private String securityAnswer;
+    private static String securityAnswer;
 
     @JsonProperty("userName")
-    private String name;
+    private static String name;
 
     public User() {
     }
 
     public User(String name, String email, String password, String securityAnswer) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.securityAnswer = securityAnswer;
+        User.name = name;
+        User.email = email;
+        User.password = password;
+        User.securityAnswer = securityAnswer;
     }
 
-    public String getEmail() {
+    public static String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public static void setEmail(String email) {
+        User.email = email;
     }
 
-    public String getPassword() {
+    public static String getPassword() {
         return password;
     }
 
-    public void setPassword(String c) {
-        this.password = c;
+    public static void setPassword(String c) {
+        User.password = c;
     }
 
-    public String getSecurityQuestion() {
+    public static String getSecurityQuestion() {
         return securityQuestion;
     }
 
-    public void setSecurityQuestion(String p) {
-        this.securityQuestion = p;
+    public static void setSecurityQuestion(String p) {
+        User.securityQuestion = p;
     }
 
-    public String getSecurityAnswer() {
+    public static String getSecurityAnswer() {
         return securityAnswer;
     }
 
-    public void setSecurityAnswer(String r) {
-        this.securityAnswer = r;
+    public static void setSecurityAnswer(String r) {
+        User.securityAnswer = r;
     }
 
-    public String getName() {
+    public static String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static void setName(String name) {
+        User.name = name;
     }
 
     @Override

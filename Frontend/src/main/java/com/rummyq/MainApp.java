@@ -20,7 +20,7 @@ public class MainApp extends Application {
         stagePrincipal.setHeight(ScreenConfig.getScreenHeight());
         stagePrincipal.setResizable(false);
 
-        GameScene firstScene = new GameScene(stagePrincipal);
+        LoginScene firstScene = new LoginScene(stagePrincipal);
         firstScene.showScreen();
     }
 
