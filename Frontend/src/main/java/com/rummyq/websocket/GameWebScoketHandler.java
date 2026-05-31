@@ -11,8 +11,8 @@ import com.rummyq.websocket.dto.RoomDTO;
 import com.rummyq.websocket.dto.TileDTO;
 public class GameWebScoketHandler {
     public static void identifyMessage(GameStatusDTO msg) {
-        if (msg.getTipo().equals("ESTADO_PARTIDA") && msg.getEstado().getStatus().equals("ESPERANDO")) {
-            addNewPlayer(msg);
+        if (msg.getTipo().equals("ESTADO_PARTIDA")) {
+            handleEstadoPartida(msg);
         }
         if (msg.getTipo().equals("MANO_JUGADOR")) {
             getTilesBoard(msg);
@@ -52,6 +52,22 @@ public class GameWebScoketHandler {
         }
         
         GameSceneIndividuals.updateTiles(User.getTiles());
+    }
+
+    private static void handleEstadoPartida(GameStatusDTO msg) {
+        if (msg.getEstado() == null) {
+            return;
+        }
+
+        addNewPlayer(msg);
+
+        List<List<TileDTO>> mesa = msg.getEstado().getMesa();
+        if (mesa != null) {
+            GameBoard board = GameBoard.getInstance();
+            if (board != null) {
+                board.loadBoardFromGroups(mesa);
+            }
+        }
     }
 
     private static void validateGame(GameStatusDTO msg)

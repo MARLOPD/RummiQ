@@ -46,6 +46,9 @@ public class GameBoard extends ScrollPane {
     private final Map<String, Node> cellTiles = new HashMap<>();
     private final Map<String, CellPane> cellPanes = new HashMap<>();
 
+    // Llaves de las celdas colocadas por el jugador durante el turno actual
+    private final java.util.Set<String> currentTurnPlacedKeys = new java.util.HashSet<>();
+
     // Referencia estática para el drag-and-drop de fichas
     private static Node draggedTile = null;
     private static String draggedSourceKey = null; // null si viene de la mano
@@ -79,24 +82,35 @@ public class GameBoard extends ScrollPane {
     public List<List<TileDTO>> obtenerGrupos() {
         List<List<TileDTO>> groups = new ArrayList<>();
 
+        if (currentTurnPlacedKeys.isEmpty()) {
+            return groups;
+        }
+
         for (int r = 0; r < rows; r++) {
             List<TileDTO> currentGroup = new ArrayList<>();
             for (int c = 0; c < cols; c++) {
                 String key = getCellKey(r, c);
-                Node tileNode = cellTiles.get(key);
+                if (!currentTurnPlacedKeys.contains(key)) {
+                    if (currentGroup.size() > 1) {
+                        groups.add(new ArrayList<>(currentGroup));
+                    }
+                    currentGroup.clear();
+                    continue;
+                }
 
+                Node tileNode = cellTiles.get(key);
                 if (tileNode instanceof StackPane) {
                     TileDTO tileDto = extractTileFromNode((StackPane) tileNode);
                     if (tileDto != null) {
                         currentGroup.add(tileDto);
+                        continue;
                     }
-                } else {
-                    if (currentGroup.size() > 1) { // Guardamos secuencias de 2 o más (el backend validará si son 3 o
-                                                   // más)
-                        groups.add(new ArrayList<>(currentGroup));
-                    }
-                    currentGroup.clear();
                 }
+
+                if (currentGroup.size() > 1) {
+                    groups.add(new ArrayList<>(currentGroup));
+                }
+                currentGroup.clear();
             }
             if (currentGroup.size() > 1) {
                 groups.add(new ArrayList<>(currentGroup));
@@ -211,14 +225,19 @@ public class GameBoard extends ScrollPane {
                 final StackPane tile = (StackPane) draggedTile;
                 final String srcKey = draggedSourceKey;
                 final CellPane dest = targetCell;
+                final String destKey = getCellKey(dest.r, dest.c);
 
                 if (srcKey != null) {
                     cellTiles.remove(srcKey);
                     CellPane sourceCell = cellPanes.get(srcKey);
                     if (sourceCell != null)
                         sourceCell.clearTile();
+
+                    currentTurnPlacedKeys.remove(srcKey);
+                    currentTurnPlacedKeys.add(destKey);
                 } else if (tile.getParent() instanceof javafx.scene.layout.Pane) {
                     ((javafx.scene.layout.Pane) tile.getParent()).getChildren().remove(tile);
+                    currentTurnPlacedKeys.add(destKey);
                 }
 
                 colocarFicha(tile, dest.r, dest.c);
@@ -265,6 +284,7 @@ public class GameBoard extends ScrollPane {
         snapshotRows = rows;
         snapshotCols = cols;
         snapshotTiles = new HashMap<>();
+        currentTurnPlacedKeys.clear();
 
         for (Map.Entry<String, Node> entry : cellTiles.entrySet()) {
             Node n = entry.getValue();
@@ -286,6 +306,7 @@ public class GameBoard extends ScrollPane {
         if (snapshotTiles == null)
             return;
 
+        currentTurnPlacedKeys.clear();
         javafx.application.Platform.runLater(() -> {
             System.out.println("[DEBUG] restoreSnapshot: starting. snapshotTiles=" + snapshotTiles.size() + ", cellTiles=" + cellTiles.size() + ", cellPanes=" + cellPanes.size() + ", gridChildren=" + gridPane.getChildren().size());
 
@@ -327,6 +348,55 @@ public class GameBoard extends ScrollPane {
 
             // Limpiar snapshot
             snapshotTiles = null;
+        });
+    }
+
+    public void loadBoardFromGroups(List<List<TileDTO>> groups) {
+        if (groups == null) {
+            return;
+        }
+
+        currentTurnPlacedKeys.clear();
+        javafx.application.Platform.runLater(() -> {
+            // Limpiar cualquier estado visual y lógico previo
+            for (Map.Entry<String, Node> entry : new HashMap<>(cellTiles).entrySet()) {
+                Node node = entry.getValue();
+                if (node != null && node.getParent() instanceof javafx.scene.layout.Pane) {
+                    ((javafx.scene.layout.Pane) node.getParent()).getChildren().remove(node);
+                }
+            }
+            gridPane.getChildren().clear();
+            cellTiles.clear();
+            cellPanes.clear();
+
+            rows = INITIAL_ROWS;
+            cols = INITIAL_COLS;
+            reconstruirGrid();
+
+            int row = 0;
+            int col = 0;
+            for (List<TileDTO> group : groups) {
+                if (group == null || group.isEmpty()) {
+                    continue;
+                }
+
+                if (col + group.size() > cols) {
+                    row++;
+                    col = 0;
+                }
+
+                for (TileDTO dto : group) {
+                    StackPane tile = GameTiles.createTile(dto.getNumero(), dto.getColorJavaFX());
+                    colocarFicha(tile, row, col);
+                    col++;
+                }
+
+                col++;
+                if (col >= cols) {
+                    row++;
+                    col = 0;
+                }
+            }
         });
     }
 
@@ -579,6 +649,8 @@ public class GameBoard extends ScrollPane {
                         if (sourceCell != null) {
                             sourceCell.clearTile();
                         }
+                        currentTurnPlacedKeys.remove(draggedSourceKey);
+                        currentTurnPlacedKeys.add(getCellKey(r, c));
                     } else {
                         // Venía de la mano (fuera del tablero), remover de su contenedor visual
                         // original
@@ -586,6 +658,7 @@ public class GameBoard extends ScrollPane {
                             // Remover del HBox/Pane donde estaba la mano
                             ((javafx.scene.layout.Pane) draggedTile.getParent()).getChildren().remove(draggedTile);
                         }
+                        currentTurnPlacedKeys.add(getCellKey(r, c));
                     }
 
                     // Colocar en esta nueva celda

@@ -80,7 +80,7 @@ public class GameStatusDTO {
         private String currentPlayer;
         private int remainingTiles;
         private List<Jugador> players;
-        private List<Object> mesa;
+        private List<List<TileDTO>> mesa;
 
         public String getRoomId() {
             return roomId;
@@ -122,11 +122,11 @@ public class GameStatusDTO {
             this.players = players;
         }
 
-        public List<Object> getMesa() {
+        public List<List<TileDTO>> getMesa() {
             return mesa;
         }
 
-        public void setMesa(List<Object> mesa) {
+        public void setMesa(List<List<TileDTO>> mesa) {
             this.mesa = mesa;
         }
     }

@@ -103,6 +103,13 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
         GameStatus estado = sessionManager.obtenerOCrearPartida(msg.getRoomId());
 
+        boolean emailRegistrado = estado.getPlayers().stream()
+                .anyMatch(p -> p.getNombre() != null && p.getNombre().equalsIgnoreCase(msg.getPlayer()));
+        if (emailRegistrado) {
+            sendError(session, "Este email ya está registrado en la partida.");
+            return;
+        }
+
         if (!estado.addPlayer(sessionId, msg.getPlayer())) {
             if (estado.getStatus() != GameStatus.Status.ESPERANDO) {
                 sendError(session, "La partida ya ha comenzado.");
