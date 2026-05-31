@@ -9,6 +9,12 @@ import com.rummyq.model.User;
 import com.rummyq.websocket.dto.GameStatusDTO;
 import com.rummyq.websocket.dto.RoomDTO;
 import com.rummyq.websocket.dto.TileDTO;
+
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 public class GameWebScoketHandler {
     public static void identifyMessage(GameStatusDTO msg) {
         if (msg.getTipo().equals("ESTADO_PARTIDA")) {
@@ -32,6 +38,10 @@ public class GameWebScoketHandler {
         }
         if (msg.getTipo().equals("RESULTADO_JUGADA")) {
             validateGame(msg);
+        }
+
+        if (msg.getTipo().equals("FIN_PARTIDA")) {
+            handleFinPartida(msg);
         }
     }
 
@@ -79,6 +89,32 @@ public class GameWebScoketHandler {
             }
             GameWebSocketClient.getInstance().passTurn();
         }
+    }
+
+    private static void handleFinPartida(GameStatusDTO msg) {
+        String ganador = msg.getGanador();
+        boolean esGanador = ganador != null && ganador.equals(User.getEmail());
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Fin de la partida");
+            alert.setHeaderText(esGanador ? "¡Felicidades!" : "Fin de la partida");
+            alert.setContentText(esGanador ? "Has ganado la partida." : "Has perdido. Ganador: " + (ganador == null ? "--" : ganador));
+
+            alert.showAndWait();
+
+            // Al aceptar, volver a la pantalla principal
+            Stage stage = null;
+            for (Window w : Window.getWindows()) {
+                if (w instanceof Stage && w.isShowing()) {
+                    stage = (Stage) w;
+                    break;
+                }
+            }
+            if (stage != null) {
+                new com.rummyq.view.MainScene(stage).showScreen();
+            }
+        });
     }
 
     

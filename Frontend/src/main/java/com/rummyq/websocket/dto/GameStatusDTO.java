@@ -16,6 +16,7 @@ public class GameStatusDTO {
     private String roomId;
     private boolean ok;
     private String reason;
+    private String ganador;
     private List<TileDTO> fichas;
 
     public String getTipo() {
@@ -72,6 +73,14 @@ public class GameStatusDTO {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public String getGanador() {
+        return ganador;
+    }
+
+    public void setGanador(String ganador) {
+        this.ganador = ganador;
     }
 
     public static class Estado {
