@@ -93,9 +93,11 @@ public class GameSceneIndividuals {
             tilesContainer.getChildren().add(tile);
         }
 
-        // Habilitar la recepción de arrastre en toda la fila de la mano (rowStack, base y container) para devolver o reordenar
+        // Habilitar la recepción de arrastre en toda la fila de la mano (rowStack, base
+        // y container) para devolver o reordenar
         EventHandler<DragEvent> dragOverHandler = e -> {
-            System.out.println("[DEBUG] DragOver - Source: " + e.getGestureSource() + ", draggedTile: " + GameBoard.getDraggedTile());
+            System.out.println("[DEBUG] DragOver - Source: " + e.getGestureSource() + ", draggedTile: "
+                    + GameBoard.getDraggedTile());
             if (GameBoard.getDraggedTile() != null) {
                 e.acceptTransferModes(TransferMode.MOVE);
             }
@@ -151,7 +153,7 @@ public class GameSceneIndividuals {
         base.setOnDragOver(dragOverHandler);
         base.setOnDragDropped(dragDroppedHandler);
 
-        rowStack.getChildren().addAll(base, highlight, tilesContainer);
+        rowStack.getChildren().addAll(base, highlight);// , tilesContainer);
 
         DropShadow ds = new DropShadow(15, Color.BLACK);
         rowStack.setEffect(ds);

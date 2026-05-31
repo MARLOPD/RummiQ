@@ -21,6 +21,13 @@ public class GameMessageDTO {
         return msg;
     }
 
+    public static GameMessageDTO createStartGame() {
+        GameMessageDTO msg = new GameMessageDTO();
+        msg.setType("INICIAR_PARTIDA");
+        msg.setRoomId(RoomDTO.getRoomId());
+        return msg;
+    }
+
     public static GameMessageDTO crearJugada(List<List<TileDTO>> groups) {
         GameMessageDTO msg = new GameMessageDTO();
         msg.setType("JUGAR_GRUPO");

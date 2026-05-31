@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rummyq.model.User;
+import com.rummyq.view.MainScene;
 import com.rummyq.websocket.dto.RoomDTO;
 
 import javafx.application.Platform;
@@ -14,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -63,7 +65,15 @@ public class WaitingRoom {
         titulo.setTextFill(Color.web("#f0d080"));
         VBox.setMargin(titulo, new Insets(0, 0, 8, 0));
 
-        // Botón cerrar
+        Button btnCancelar = new Button("Cancelar");
+        btnCancelar
+                .setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(201,168,76,0.7); -fx-cursor: hand;");
+        btnCancelar.setOnAction(e -> {
+            dialog.close();
+            MainScene mainScene = new MainScene(owner);
+            mainScene.showScreen();
+        });
+
         Button btnCerrar = new Button("Iniciar Partida");
         btnCerrar.setPrefWidth(280);
         btnCerrar.setPrefHeight(44);
@@ -73,7 +83,17 @@ public class WaitingRoom {
                         "-fx-text-fill: #1a0e00;" +
                         "-fx-background-radius: 6;" +
                         "-fx-cursor: hand;");
+
         btnCerrar.setOnAction(e -> {
+            if (RoomDTO.getPlayers().stream().distinct().count() < 2) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("No hay suficientes jugadores");
+                alert.setContentText("Deben haber al menos 2 jugadores para iniciar la partida.");
+                alert.showAndWait();
+                return;
+            }
+            com.rummyq.websocket.GameWebSocketClient.getInstance().startGame();
             dialog.close();
             Parent parent = pane.getParent();
 
@@ -107,7 +127,7 @@ public class WaitingRoom {
 
         HBox info = new HBox(14, idContainer, playersContainer);
         info.setAlignment(Pos.CENTER);
-        contenido.getChildren().addAll(titulo, info, btnCerrar);
+        contenido.getChildren().addAll(titulo, info, btnCerrar, btnCancelar);
 
         Scene escena = new Scene(contenido, 480, 420);
         escena.setFill(Color.TRANSPARENT);

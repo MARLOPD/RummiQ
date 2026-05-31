@@ -51,6 +51,22 @@ public class GameWebSocketClient implements WebSocket.Listener {
         }
     }
 
+    public void startGame() {
+        if (webSocket == null) {
+            System.err.println("[WebSocket] No se puede iniciar la partida: no hay conexión.");
+            return;
+        }
+        try {
+            GameMessageDTO msg = GameMessageDTO.createStartGame();
+            String json = mapper.writeValueAsString(msg);
+            webSocket.sendText(json, true);
+            log.info("[WebSocket] Partida iniciada: " + json);
+        } catch (Exception e) {
+            log.error("[WebSocket] Error al iniciar partida: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public void joinGame() {
         if (webSocket == null) {
             System.err.println("[WebSocket] No se puede enviar jugada: no hay conexión.");
