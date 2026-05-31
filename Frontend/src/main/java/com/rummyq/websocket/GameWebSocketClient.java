@@ -1,12 +1,5 @@
 package com.rummyq.websocket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rummyq.core.WaitingRoom;
-import com.rummyq.websocket.dto.GameMessageDTO;
-import com.rummyq.websocket.dto.GameStatusDTO;
-import com.rummyq.websocket.dto.RoomDTO;
-import com.rummyq.websocket.dto.TileDTO;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
@@ -15,6 +8,11 @@ import java.util.concurrent.CompletionStage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rummyq.websocket.dto.GameMessageDTO;
+import com.rummyq.websocket.dto.GameStatusDTO;
+import com.rummyq.websocket.dto.TileDTO;
 
 public class GameWebSocketClient implements WebSocket.Listener {
 
@@ -98,6 +96,23 @@ public class GameWebSocketClient implements WebSocket.Listener {
         } catch (Exception e) {
             log.error("[WebSocket] Error al enviar jugada: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public void passTurn() {
+        if (webSocket == null) {
+            log.error("[WebSocket] No se puede enviar mensaje: no hay conexión.");
+            return;
+        }
+
+        try {
+            GameMessageDTO msg = new GameMessageDTO();
+            msg.setType("ROBAR_FICHA");
+            String json = mapper.writeValueAsString(msg);
+            webSocket.sendText(json, true);
+            log.info("[WebSocket] Mensaje enviado: " + json);
+        } catch (Exception e) {
+            log.error("[WebSocket] Error al enviar mensaje: " + e.getMessage());
         }
     }
 

@@ -1,12 +1,12 @@
 
 package com.rummyq.view;
 
+import com.rummyq.core.ComponentFactory;
+import com.rummyq.core.WaitingRoom;
+import com.rummyq.features.gameScene.GameBoard;
 import com.rummyq.features.gameScene.GameSceneActions;
 import com.rummyq.features.gameScene.GameSceneIndividuals;
 import com.rummyq.features.gameScene.GameTiles;
-import com.rummyq.features.gameScene.GameBoard;
-import com.rummyq.core.ComponentFactory;
-import com.rummyq.core.WaitingRoom;
 import com.rummyq.model.ScreenConfig;
 import com.rummyq.model.User;
 
@@ -65,6 +65,10 @@ public class GameScene {
         StackPane secretTile = new StackPane();
         secretTile.setPickOnBounds(false);
         HBox tilesBox = GameTiles.secretTilesOnTheTable(6);
+        
+        tilesBox.setOnMouseClicked(e -> {
+            com.rummyq.websocket.GameWebSocketClient.getInstance().passTurn();
+        });
 
         secretTile.setMaxSize(tilesBox.getWidth(), tilesBox.getHeight());
         secretTile.setPrefSize(tilesBox.getWidth(), tilesBox.getHeight());
