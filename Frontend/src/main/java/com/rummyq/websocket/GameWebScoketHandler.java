@@ -31,16 +31,10 @@ public class GameWebScoketHandler {
 
     private static void getTilesBoard(GameStatusDTO msg) {
         List<TileDTO> fichasRecibidas = msg.getFichas();
-        List<TileDTO> fichasUsuario = User.getTiles();
         
-        if (fichasUsuario == null) {
+        if (fichasRecibidas != null) {
+            // Reemplazar completamente las fichas del usuario
             User.setTiles(fichasRecibidas);
-        } else if (fichasRecibidas != null) {
-            for (TileDTO fichaRecibida : fichasRecibidas) {
-                if (!fichasUsuario.contains(fichaRecibida)) {
-                    fichasUsuario.add(fichaRecibida);
-                }
-            }
         }
         
         GameSceneIndividuals.updateTiles(User.getTiles());
