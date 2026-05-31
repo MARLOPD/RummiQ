@@ -1,12 +1,12 @@
 package com.rummyq.backend.services;
 
-import com.rummyq.backend.models.Ficha;
-
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.rummyq.backend.models.Ficha;
 
 public class ValidateGame {
 
@@ -151,10 +151,71 @@ public class ValidateGame {
     }
 
     public int calcularPuntos(List<List<Ficha>> grupos) {
-        return grupos.stream()
-                .flatMap(List::stream)
-                .filter(f -> !f.isEsComodin())
-                .mapToInt(f -> Integer.parseInt(f.getNumero()))
-                .sum();
+        int total = 0;
+        
+        for (List<Ficha> grupo : grupos) {
+            List<Ficha> normales = grupo.stream()
+                    .filter(f -> !f.isEsComodin())
+                    .collect(Collectors.toList());
+            
+            int comodines = (int) grupo.stream().filter(Ficha::isEsComodin).count();
+            
+            if (normales.isEmpty()) {
+                continue;
+            }
+            
+            int sumaGrupo = normales.stream()
+                    .mapToInt(f -> Integer.parseInt(f.getNumero()))
+                    .sum();
+            total += sumaGrupo;
+            
+            if (comodines > 0) {
+                int primerNumero = Integer.parseInt(normales.get(0).getNumero());
+                boolean esGrupo = normales.stream()
+                        .allMatch(f -> Integer.parseInt(f.getNumero()) == primerNumero);
+                
+                if (esGrupo) {
+                    total += primerNumero * comodines;
+                } else {
+                    List<Integer> numeros = normales.stream()
+                            .map(f -> Integer.parseInt(f.getNumero()))
+                            .sorted()
+                            .collect(Collectors.toList());
+                    
+                    int sumaComodines = calcularValorComodinesEscalera(numeros, comodines);
+                    total += sumaComodines;
+                }
+            }
+        }
+        
+        return total;
+    }
+    
+    private int calcularValorComodinesEscalera(List<Integer> numeros, int comodines) {
+        int huecos = 0;
+        for (int i = 1; i < numeros.size(); i++) {
+            int salto = numeros.get(i) - numeros.get(i - 1) - 1;
+            huecos += salto;
+        }
+        
+        int sumaComodines = 0;
+        
+        for (int i = 1; i < numeros.size(); i++) {
+            int anterior = numeros.get(i - 1);
+            int actual = numeros.get(i);
+            for (int j = anterior + 1; j < actual; j++) {
+                sumaComodines += j;
+            }
+        }
+        
+        int comodinesSobrantes = comodines - huecos;
+        if (comodinesSobrantes > 0) {
+            int max = numeros.get(numeros.size() - 1);
+            for (int i = 1; i <= comodinesSobrantes; i++) {
+                sumaComodines += max + i;
+            }
+        }
+        
+        return sumaComodines;
     }
 }

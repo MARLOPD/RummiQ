@@ -1,23 +1,25 @@
 package com.rummyq.features.gameScene;
 
-import com.rummyq.core.UIColors;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.input.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rummyq.core.UIColors;
 import com.rummyq.websocket.dto.TileDTO;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Representa el tablero principal (la mesa) de RummyQ usando una matriz
@@ -108,7 +110,7 @@ public class GameBoard extends ScrollPane {
             Integer number = null;
             boolean isJoker = false;
 
-            if (numberStr.equalsIgnoreCase("J") || numberStr.equalsIgnoreCase("Comodin")) {
+            if (numberStr.equalsIgnoreCase("☆")) {
                 isJoker = true;
                 number = 0;
             } else {

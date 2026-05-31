@@ -1,7 +1,10 @@
 package com.rummyq.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rummyq.websocket.dto.TileDTO;
 
 /**
  * Modelo que representa un usuario registrado en el sistema.
@@ -12,6 +15,7 @@ public class User {
     private static String email;
     private static String password;
     private static String securityQuestion;
+    private static List<TileDTO> tiles;
 
     @JsonProperty("answer")
     private static String securityAnswer;
@@ -67,6 +71,14 @@ public class User {
 
     public static void setName(String name) {
         User.name = name;
+    }
+
+    public static List<TileDTO> getTiles() {
+        return tiles;
+    }
+
+    public static void setTiles(List<TileDTO> tiles) {
+        User.tiles = tiles;
     }
 
     @Override

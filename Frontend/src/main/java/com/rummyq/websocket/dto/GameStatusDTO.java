@@ -3,13 +3,19 @@ package com.rummyq.websocket.dto;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GameStatusDTO {
 
     @JsonAlias({ "type", "tipo" })
     private String tipo;
     private Estado estado;
+    @JsonAlias({ "jugador", "player" })
     private String jugador;
+    private String roomId;
+    private boolean ok;
+    private String reason;
     private List<TileDTO> fichas;
 
     public String getTipo() {
@@ -42,6 +48,30 @@ public class GameStatusDTO {
 
     public void setJugador(String jugador) {
         this.jugador = jugador;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public boolean isOk() {
+        return ok;
+    }
+
+    public void setOk(boolean ok) {
+        this.ok = ok;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public static class Estado {

@@ -8,6 +8,7 @@ module com.rummyq {
     requires org.slf4j;
     requires ch.qos.logback.classic;
     requires ch.qos.logback.core;
+    requires com.fasterxml.jackson.annotation;
 
     opens com.rummyq to javafx.fxml, ch.qos.logback.classic;
     opens com.rummyq.view to javafx.fxml;
