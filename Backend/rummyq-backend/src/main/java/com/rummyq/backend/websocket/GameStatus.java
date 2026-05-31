@@ -6,6 +6,7 @@ import com.rummyq.backend.services.TileBag;
 import com.rummyq.backend.websocket.GameMessage.Tile;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,13 +80,56 @@ public class GameStatus {
 
         for (List<Ficha> grupo : groups) {
             for (Ficha f : grupo) {
-                player.getMano().removeIf(mf -> mf.esIgual(f));
+                boolean eliminadoDeMano = removeOneFromList(player.getMano(), f);
+                if (!eliminadoDeMano) {
+                    removeOneFromMesa(f);
+                }
             }
             mesa.add(new ArrayList<>(grupo));
         }
         if (!yaAbrio.get(idx)) {
             yaAbrio.set(idx, true);
         }
+    }
+
+    public boolean hasFichaEnMesa(Ficha ficha) {
+        for (List<Ficha> grupo : mesa) {
+            for (Ficha f : grupo) {
+                if (f.esIgual(ficha)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean removeOneFromList(List<Ficha> fichas, Ficha target) {
+        Iterator<Ficha> iterator = fichas.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().esIgual(target)) {
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean removeOneFromMesa(Ficha ficha) {
+        Iterator<List<Ficha>> grupoIterator = mesa.iterator();
+        while (grupoIterator.hasNext()) {
+            List<Ficha> grupo = grupoIterator.next();
+            Iterator<Ficha> fichaIterator = grupo.iterator();
+            while (fichaIterator.hasNext()) {
+                if (fichaIterator.next().esIgual(ficha)) {
+                    fichaIterator.remove();
+                    if (grupo.isEmpty()) {
+                        grupoIterator.remove();
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Ficha drawTile(String sessionId) {

@@ -186,8 +186,9 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
                         return false;
                     }
                 });
-                if (!tieneEnMano) {
-                    sendError(session, "No tienes la ficha " + f + " en tu mano.");
+                boolean estaEnMesa = estado.hasFichaEnMesa(f);
+                if (!tieneEnMano && !estaEnMesa) {
+                    sendError(session, "No tienes la ficha " + f + " en tu mano ni en la mesa.");
                     return;
                 }
             }

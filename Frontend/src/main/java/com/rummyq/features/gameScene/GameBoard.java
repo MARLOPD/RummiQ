@@ -120,24 +120,17 @@ public class GameBoard extends ScrollPane {
         return groups;
     }
 
+    private static final String JOKER_SYMBOL = "\u2606";
+
     private TileDTO extractTileFromNode(StackPane tilePane) {
         if (tilePane.getChildren().size() > 1 && tilePane.getChildren().get(1) instanceof Label) {
             Label lbl = (Label) tilePane.getChildren().get(1);
             String numberStr = lbl.getText();
             Color colorFill = (Color) lbl.getTextFill();
 
-            Integer number = null;
-            boolean isJoker = false;
-
-            if (numberStr.equalsIgnoreCase("☆")) {
-                isJoker = true;
-                number = 0;
-            } else {
-                try {
-                    number = Integer.parseInt(numberStr);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
+            boolean isJoker = JOKER_SYMBOL.equals(numberStr);
+            if (isJoker) {
+                numberStr = JOKER_SYMBOL;
             }
 
             String colorStr = "BLACK";
@@ -151,7 +144,7 @@ public class GameBoard extends ScrollPane {
                 colorStr = "YELLOW";
             }
 
-            return new TileDTO(String.valueOf(number), colorStr, isJoker);
+            return new TileDTO(numberStr, colorStr, isJoker);
         }
         return null;
     }

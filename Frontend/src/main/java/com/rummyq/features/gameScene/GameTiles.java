@@ -16,12 +16,17 @@ import javafx.scene.text.FontWeight;
 
 public class GameTiles {
 
+    private static final String JOKER_SYMBOL = "\u2606";
     private static final double TILE_WIDTH = 45;
     private static final double TILE_HEIGHT = 60;
 
     private static final double SCALE_FACTOR = 2;
 
     public static StackPane createTile(String number, Color color) {
+        if (number == null || number.isBlank()) {
+            number = JOKER_SYMBOL;
+        }
+
         StackPane tile = new StackPane();
         tile.setPrefSize(TILE_WIDTH, TILE_HEIGHT);
 
