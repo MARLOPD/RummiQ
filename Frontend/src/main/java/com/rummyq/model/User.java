@@ -15,6 +15,7 @@ public class User {
     private static String email;
     private static String password;
     private static String securityQuestion;
+    private static String currentPlayer;
     private static List<TileDTO> tiles;
 
     @JsonProperty("answer")
@@ -63,6 +64,14 @@ public class User {
 
     public static void setSecurityAnswer(String r) {
         User.securityAnswer = r;
+    }
+
+    public static String getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public static void setCurrentPlayer(String currentPlayer) {
+        User.currentPlayer = currentPlayer;
     }
 
     public static String getName() {

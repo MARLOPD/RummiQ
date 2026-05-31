@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.rummyq.core.ComponentFactory;
 import com.rummyq.model.ScreenConfig;
+import com.rummyq.model.User;
 import com.rummyq.websocket.dto.TileDTO;
 
 import javafx.application.Platform;
@@ -387,5 +388,28 @@ public class GameSceneIndividuals {
         container.setTranslateX(-18);
 
         return container;
+    }
+
+    // ─────────────────────────────────────────────
+    // Control del botón Finalizar Turno
+    // ─────────────────────────────────────────────
+
+    private static Button finalizarTurnoButton;
+
+    public static void setFinalizarTurnoButton(Button button) {
+        finalizarTurnoButton = button;
+        updateFinalizarTurnoButtonVisibility();
+    }
+
+    public static void updateFinalizarTurnoButtonVisibility() {
+        if (finalizarTurnoButton == null) {
+            return;
+        }
+
+        boolean esMiTurno = User.getCurrentPlayer() != null && User.getEmail() != null
+                && User.getCurrentPlayer().equals(User.getEmail());
+
+        finalizarTurnoButton.setVisible(esMiTurno);
+        finalizarTurnoButton.setManaged(esMiTurno);
     }
 }

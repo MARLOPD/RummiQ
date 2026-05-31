@@ -51,6 +51,11 @@ public class GameBoard extends ScrollPane {
     private static String draggedSourceKey = null; // null si viene de la mano
     private static GameBoard instance = null;
 
+    // Snapshot del estado del tablero (para poder revertir jugadas)
+    private Map<String, com.rummyq.websocket.dto.TileDTO> snapshotTiles = null;
+    private int snapshotRows = 0;
+    private int snapshotCols = 0;
+
     public static GameBoard getInstance() {
         return instance;
     }
@@ -250,6 +255,79 @@ public class GameBoard extends ScrollPane {
             }
         });
 
+    }
+
+    /**
+     * Captura un snapshot (estado lógico) del tablero actual para poder
+     * restaurarlo si la jugada resulta inválida.
+     */
+    public void snapshotBoard() {
+        snapshotRows = rows;
+        snapshotCols = cols;
+        snapshotTiles = new HashMap<>();
+
+        for (Map.Entry<String, Node> entry : cellTiles.entrySet()) {
+            Node n = entry.getValue();
+            if (n instanceof StackPane) {
+                com.rummyq.websocket.dto.TileDTO dto = extractTileFromNode((StackPane) n);
+                if (dto != null) {
+                    snapshotTiles.put(entry.getKey(), dto);
+                }
+            }
+        }
+        System.out.println("[DEBUG] snapshotBoard: rows=" + snapshotRows + " cols=" + snapshotCols + " tiles=" + (snapshotTiles==null?0:snapshotTiles.size()));
+    }
+
+    /**
+     * Restaura el tablero al último snapshot guardado. Opera en el hilo de
+     * JavaFX.
+     */
+    public void restoreSnapshot() {
+        if (snapshotTiles == null)
+            return;
+
+        javafx.application.Platform.runLater(() -> {
+            System.out.println("[DEBUG] restoreSnapshot: starting. snapshotTiles=" + snapshotTiles.size() + ", cellTiles=" + cellTiles.size() + ", cellPanes=" + cellPanes.size() + ", gridChildren=" + gridPane.getChildren().size());
+
+            // Limpiar cualquier estado visual y lógico previo
+            gridPane.getChildren().clear();
+            for (Map.Entry<String, Node> entry : new HashMap<>(cellTiles).entrySet()) {
+                Node node = entry.getValue();
+                if (node != null && node.getParent() instanceof javafx.scene.layout.Pane) {
+                    ((javafx.scene.layout.Pane) node.getParent()).getChildren().remove(node);
+                }
+            }
+            cellTiles.clear();
+            cellPanes.clear();
+
+            // Restaurar dimensiones
+            rows = snapshotRows;
+            cols = snapshotCols;
+
+            // Reconstruir grid vacío
+            reconstruirGrid();
+
+            // Colocar fichas desde el snapshot (creando nuevas instancias visuales)
+            for (Map.Entry<String, com.rummyq.websocket.dto.TileDTO> e : snapshotTiles.entrySet()) {
+                String key = e.getKey();
+                com.rummyq.websocket.dto.TileDTO dto = e.getValue();
+                int r = finalRow(key);
+                int c = finalCol(key);
+
+                StackPane tile = GameTiles.createTile(dto.getNumero(), dto.getColorJavaFX());
+
+                cellTiles.put(key, tile);
+                CellPane cell = cellPanes.get(key);
+                if (cell != null) {
+                    cell.setTile(tile);
+                }
+                configurarDragSource(tile, key);
+            }
+            System.out.println("[DEBUG] restoreSnapshot: finished. cellTiles=" + cellTiles.size() + ", cellPanes=" + cellPanes.size() + ", gridChildren=" + gridPane.getChildren().size());
+
+            // Limpiar snapshot
+            snapshotTiles = null;
+        });
     }
 
     /**

@@ -3,6 +3,7 @@ package com.rummyq.websocket;
 import java.util.List;
 
 import com.rummyq.core.WaitingRoom;
+import com.rummyq.features.gameScene.GameBoard;
 import com.rummyq.features.gameScene.GameSceneIndividuals;
 import com.rummyq.model.User;
 import com.rummyq.websocket.dto.GameStatusDTO;
@@ -16,9 +17,22 @@ public class GameWebScoketHandler {
         if (msg.getTipo().equals("MANO_JUGADOR")) {
             getTilesBoard(msg);
         }
-        //if (msg.getTipo().equals("RESULTADO_JUGADA")) {
-        //    getTilesBoard(msg);
-        //}
+        if (msg.getTipo().equals("TURNO")) {
+            User.setCurrentPlayer(msg.getJugador());
+            GameSceneIndividuals.updateFinalizarTurnoButtonVisibility();
+
+            // Si el turno comienza para este usuario, capturamos un snapshot
+            // del tablero para poder restaurarlo en caso de jugada inválida.
+            if (User.getEmail() != null && User.getEmail().equals(msg.getJugador())) {
+                GameBoard board = GameBoard.getInstance();
+                if (board != null) {
+                    board.snapshotBoard();
+                }
+            }
+        }
+        if (msg.getTipo().equals("RESULTADO_JUGADA")) {
+            validateGame(msg);
+        }
     }
 
     private static void addNewPlayer(GameStatusDTO msg) {
@@ -39,4 +53,17 @@ public class GameWebScoketHandler {
         
         GameSceneIndividuals.updateTiles(User.getTiles());
     }
+
+    private static void validateGame(GameStatusDTO msg)
+    {
+        if (!msg.isOk()) {
+            GameBoard board = GameBoard.getInstance();
+            if (board != null) {
+                board.restoreSnapshot();
+            }
+            GameWebSocketClient.getInstance().passTurn();
+        }
+    }
+
+    
 }

@@ -107,6 +107,11 @@ public class GameScene {
                 com.rummyq.websocket.GameWebSocketClient.getInstance().enviarJugada(grupos);
             }
         });
+        
+        boolean mostrarFinalizar = User.getCurrentPlayer() != null && User.getCurrentPlayer().equals(User.getEmail());
+        btnFinalizarTurno.setVisible(mostrarFinalizar);
+        btnFinalizarTurno.setManaged(mostrarFinalizar);
+        GameSceneIndividuals.setFinalizarTurnoButton(btnFinalizarTurno);
 
         Pane player1 = ComponentFactory.createUserPanel("Jugador 1");
         player1.setPickOnBounds(false);
