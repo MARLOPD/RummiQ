@@ -159,7 +159,7 @@ public class GameSceneIndividuals {
         HBox tilesContainer = new HBox(10);
         tilesContainer.setAlignment(Pos.CENTER);
         tilesContainer.setPadding(new Insets(10));
-
+        tilesContainer.getChildren().clear();
         for (TileDTO t : tiles) {
             StackPane tile = GameTiles.createTile(t.getNumero(), t.getColorJavaFX());
             GameBoard.habilitarDragDesdeMano(tile);
