@@ -2,10 +2,15 @@ package com.rummyq.websocket.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 public class GameStatusDTO {
 
+    @JsonAlias({ "type", "tipo" })
     private String tipo;
     private Estado estado;
+    private String jugador;
+    private List<TileDTO> fichas;
 
     public String getTipo() {
         return tipo;
@@ -21,6 +26,22 @@ public class GameStatusDTO {
 
     public void setEstado(Estado estado) {
         this.estado = estado;
+    }
+
+    public List<TileDTO> getFichas() {
+        return fichas;
+    }
+
+    public void setFichas(List<TileDTO> fichas) {
+        this.fichas = fichas;
+    }
+
+    public String getJugador() {
+        return jugador;
+    }
+
+    public void setJugador(String jugador) {
+        this.jugador = jugador;
     }
 
     public static class Estado {

@@ -1,6 +1,7 @@
 package com.rummyq.features.gameScene;
 
 import com.rummyq.model.ScreenConfig;
+import com.rummyq.websocket.dto.TileDTO;
 import com.rummyq.core.ComponentFactory;
 
 import javafx.geometry.Insets;
@@ -22,8 +23,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.Node;
 import javafx.scene.input.TransferMode;
 import javafx.scene.input.DragEvent;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
-import java.util.Random;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameSceneIndividuals {
 
@@ -35,6 +39,9 @@ public class GameSceneIndividuals {
             GameSceneIndividuals.class.getResourceAsStream("/assets/wood.png"));
 
     private final GameSceneActions actions;
+    private static StackPane topBoard;
+    private static StackPane bottomBoard;
+    private static Rectangle base;
 
     public GameSceneIndividuals(GameSceneActions actions) {
         this.actions = actions;
@@ -48,8 +55,8 @@ public class GameSceneIndividuals {
         boardRows.setAlignment(Pos.CENTER);
         boardRows.setSpacing(-5);
 
-        StackPane topBoard = createBoardRow(7, true, BOARD_WIDTH);
-        StackPane bottomBoard = createBoardRow(7, false, BOARD_WIDTH * 1.05);
+        topBoard = createBoardRow(true, BOARD_WIDTH);
+        bottomBoard = createBoardRow(false, BOARD_WIDTH * 1.05);
         boardRows.getChildren().addAll(topBoard, bottomBoard);
 
         StackPane.setAlignment(boardRows, Pos.BOTTOM_CENTER);
@@ -58,12 +65,12 @@ public class GameSceneIndividuals {
         return boardRows;
     }
 
-    private static StackPane createBoardRow(int tileCount, boolean isTop, double recWidth) {
+    private static StackPane createBoardRow(boolean isTop, double recWidth) {
         StackPane rowStack = new StackPane();
         rowStack.setMaxWidth(BOARD_WIDTH);
         rowStack.setPrefHeight(90);
 
-        Rectangle base = new Rectangle(recWidth, 85);
+        base = new Rectangle(recWidth, 85);
         base.setArcWidth(5);
         base.setArcHeight(5);
 
@@ -78,80 +85,6 @@ public class GameSceneIndividuals {
         Rectangle highlight = new Rectangle(BOARD_WIDTH - 4, 2);
         highlight.setFill(Color.web("#ffffff", 0.1));
         highlight.setTranslateY(-40);
-
-        HBox tilesContainer = new HBox(10);
-        tilesContainer.setAlignment(Pos.CENTER);
-        tilesContainer.setPadding(new Insets(10));
-
-        Random rand = new Random();
-        Color[] colors = { Color.RED, Color.BLUE, Color.BLACK, Color.web("#FFD700") };
-
-        for (int i = 0; i < tileCount; i++) {
-            StackPane tile = GameTiles.createTile(String.valueOf(rand.nextInt(13) + 1),
-                    colors[rand.nextInt(colors.length)]);
-            GameBoard.habilitarDragDesdeMano(tile);
-            tilesContainer.getChildren().add(tile);
-        }
-
-        // Habilitar la recepción de arrastre en toda la fila de la mano (rowStack, base
-        // y container) para devolver o reordenar
-        EventHandler<DragEvent> dragOverHandler = e -> {
-            System.out.println("[DEBUG] DragOver - Source: " + e.getGestureSource() + ", draggedTile: "
-                    + GameBoard.getDraggedTile());
-            if (GameBoard.getDraggedTile() != null) {
-                e.acceptTransferModes(TransferMode.MOVE);
-            }
-            e.consume();
-        };
-
-        EventHandler<DragEvent> dragDroppedHandler = e -> {
-            System.out.println("[DEBUG] DragDropped - draggedTile: " + GameBoard.getDraggedTile());
-            Node tile = GameBoard.getDraggedTile();
-            boolean success = false;
-            if (tile != null) {
-                String sourceKey = GameBoard.getDraggedSourceKey();
-                if (sourceKey != null) {
-                    GameBoard board = GameBoard.getInstance();
-                    if (board != null) {
-                        board.removerFicha(tile);
-                    }
-                } else {
-                    if (tile.getParent() instanceof Pane) {
-                        ((Pane) tile.getParent()).getChildren().remove(tile);
-                    }
-                }
-
-                // Convertir la coordenada X del drop al espacio de tilesContainer
-                javafx.geometry.Point2D localPoint = tilesContainer.sceneToLocal(e.getSceneX(), e.getSceneY());
-                double dropX = localPoint.getX();
-
-                int insertIndex = tilesContainer.getChildren().size();
-                for (int i = 0; i < tilesContainer.getChildren().size(); i++) {
-                    Node child = tilesContainer.getChildren().get(i);
-                    double childCenterX = child.getBoundsInParent().getCenterX();
-                    if (dropX < childCenterX) {
-                        insertIndex = i;
-                        break;
-                    }
-                }
-
-                tilesContainer.getChildren().add(insertIndex, tile);
-                GameBoard.habilitarDragDesdeMano(tile);
-                success = true;
-            }
-            System.out.println("[DEBUG] DragDropped success: " + success);
-            e.setDropCompleted(success);
-            e.consume();
-        };
-
-        rowStack.setOnDragOver(dragOverHandler);
-        rowStack.setOnDragDropped(dragDroppedHandler);
-
-        tilesContainer.setOnDragOver(dragOverHandler);
-        tilesContainer.setOnDragDropped(dragDroppedHandler);
-
-        base.setOnDragOver(dragOverHandler);
-        base.setOnDragDropped(dragDroppedHandler);
 
         rowStack.getChildren().addAll(base, highlight);// , tilesContainer);
 
@@ -213,5 +146,81 @@ public class GameSceneIndividuals {
         container.setTranslateX(-18);
 
         return container;
+    }
+
+    public static void updateTiles(List<TileDTO> tiles) {
+        Platform.runLater(() -> {
+            GameSceneIndividuals.createTiles(tiles.stream().limit(7).collect(Collectors.toList()), topBoard);
+            GameSceneIndividuals.createTiles(tiles.stream().skip(7).collect(Collectors.toList()), bottomBoard);
+        });
+    }
+
+    private static void createTiles(List<TileDTO> tiles, StackPane rowStack) {
+        HBox tilesContainer = new HBox(10);
+        tilesContainer.setAlignment(Pos.CENTER);
+        tilesContainer.setPadding(new Insets(10));
+
+        for (TileDTO t : tiles) {
+            StackPane tile = GameTiles.createTile(t.getNumero(), t.getColorJavaFX());
+            GameBoard.habilitarDragDesdeMano(tile);
+            tilesContainer.getChildren().add(tile);
+        }
+
+        EventHandler<DragEvent> dragOverHandler = e -> {
+            if (GameBoard.getDraggedTile() != null) {
+                e.acceptTransferModes(TransferMode.MOVE);
+            }
+            e.consume();
+        };
+
+        EventHandler<DragEvent> dragDroppedHandler = e -> {
+            System.out.println("[DEBUG] DragDropped - draggedTile: " + GameBoard.getDraggedTile());
+            Node tile = GameBoard.getDraggedTile();
+            boolean success = false;
+            if (tile != null) {
+                String sourceKey = GameBoard.getDraggedSourceKey();
+                if (sourceKey != null) {
+                    GameBoard board = GameBoard.getInstance();
+                    if (board != null) {
+                        board.removerFicha(tile);
+                    }
+                } else {
+                    if (tile.getParent() instanceof Pane) {
+                        ((Pane) tile.getParent()).getChildren().remove(tile);
+                    }
+                }
+
+                // Convertir la coordenada X del drop al espacio de tilesContainer
+                javafx.geometry.Point2D localPoint = tilesContainer.sceneToLocal(e.getSceneX(), e.getSceneY());
+                double dropX = localPoint.getX();
+
+                int insertIndex = tilesContainer.getChildren().size();
+                for (int i = 0; i < tilesContainer.getChildren().size(); i++) {
+                    Node child = tilesContainer.getChildren().get(i);
+                    double childCenterX = child.getBoundsInParent().getCenterX();
+                    if (dropX < childCenterX) {
+                        insertIndex = i;
+                        break;
+                    }
+                }
+
+                tilesContainer.getChildren().add(insertIndex, tile);
+                GameBoard.habilitarDragDesdeMano(tile);
+                success = true;
+            }
+            e.setDropCompleted(success);
+            e.consume();
+        };
+
+        rowStack.setOnDragOver(dragOverHandler);
+        rowStack.setOnDragDropped(dragDroppedHandler);
+
+        tilesContainer.setOnDragOver(dragOverHandler);
+        tilesContainer.setOnDragDropped(dragDroppedHandler);
+
+        base.setOnDragOver(dragOverHandler);
+        base.setOnDragDropped(dragDroppedHandler);
+
+        rowStack.getChildren().add(tilesContainer);
     }
 }

@@ -269,6 +269,10 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
     private void sendMano(WebSocketSession session, GameStatus estado) {
         List<Tile> mano = estado.getManoDTO(session.getId());
+        mano = mano.stream().map(p -> {
+            p.setNumero(p.isEsComodin() ? "☆" : p.getNumero());
+            return p;
+        }).collect(Collectors.toList());
         var respuesta = new java.util.HashMap<String, Object>();
         respuesta.put("tipo", "MANO_JUGADOR");
         respuesta.put("fichas", mano);

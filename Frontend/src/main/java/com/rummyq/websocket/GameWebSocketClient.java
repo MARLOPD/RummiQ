@@ -115,15 +115,7 @@ public class GameWebSocketClient implements WebSocket.Listener {
             ObjectMapper mapper = new ObjectMapper();
             GameStatusDTO msg = mapper.readValue(data.toString(), GameStatusDTO.class);
             log.info("[WebSocket] Mensaje parseado: " + msg);
-            var players = msg.getEstado().getPlayers();
-            if (msg.getEstado().getStatus().equals("ESPERANDO")) {
-                List<String> playerNames = players.stream().distinct().map(p -> p.getNombre()).toList(); // Cambiar a
-                                                                                                         // collect
-                RoomDTO.setPlayers(playerNames);
-                log.debug("[WebSocket] Room players: " + RoomDTO.getPlayers().toString());
-                WaitingRoom.updatePlayers();
-            }
-
+            GameWebScoketHandler.identifyMessage(msg);
         } catch (Exception e) {
             log.error("[WebSocket] Error al parsear mensaje: " + e.getMessage());
             e.printStackTrace();

@@ -90,7 +90,7 @@ public class GameMessage {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Tile {
-        private Integer numero;
+        private String numero;
         private String color;
         private boolean esComodin;
 
@@ -103,11 +103,11 @@ public class GameMessage {
             this.esComodin = ficha.isEsComodin();
         }
 
-        public Integer getNumero() {
+        public String getNumero() {
             return numero;
         }
 
-        public void setNumero(Integer numero) {
+        public void setNumero(String numero) {
             this.numero = numero;
         }
 

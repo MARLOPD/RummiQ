@@ -1,45 +1,54 @@
 package com.rummyq.websocket.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javafx.scene.paint.Color;
+
 public class TileDTO {
-    private Integer number;
+    private String numero;
     private String color;
-    private boolean isJoker;
+    private boolean esComodin;
 
     public TileDTO() {
     }
 
-    public TileDTO(Integer number, String color, boolean isJoker) {
-        this.number = number;
+    public TileDTO(String numero, String color, boolean esComodin) {
+        this.numero = numero;
         this.color = color;
-        this.isJoker = isJoker;
+        this.esComodin = esComodin;
     }
 
-    public Integer getNumber() {
-        return number;
+    public String getNumero() {
+        return numero;
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
     public String getColor() {
-        return color;
+        return this.color;
     }
 
     public void setColor(String color) {
         this.color = color;
     }
 
-    public boolean getIsJoker() {
-        return isJoker;
+    public boolean getEsComodin() {
+        return esComodin;
     }
 
-    public void setIsJoker(boolean isJoker) {
-        this.isJoker = isJoker;
+    public void setEsComodin(boolean esComodin) {
+        this.esComodin = esComodin;
+    }
+
+    @JsonIgnore
+    public Color getColorJavaFX() {
+        return Color.valueOf(this.color.toUpperCase());
     }
 
     @Override
     public String toString() {
-        return isJoker ? "Comodin" : (number + " " + color);
+        return esComodin ? "Comodin" : (numero + " " + color);
     }
 }

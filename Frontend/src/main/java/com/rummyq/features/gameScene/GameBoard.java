@@ -119,18 +119,18 @@ public class GameBoard extends ScrollPane {
                 }
             }
 
-            String colorStr = "NEGRO";
+            String colorStr = "BLACK";
             if (colorFill.equals(Color.RED)) {
-                colorStr = "ROJO";
+                colorStr = "RED";
             } else if (colorFill.equals(Color.BLUE)) {
-                colorStr = "AZUL";
+                colorStr = "BLUE";
             } else if (colorFill.equals(Color.BLACK)) {
-                colorStr = "NEGRO";
+                colorStr = "BLACK";
             } else {
-                colorStr = "AMARILLO";
+                colorStr = "YELLOW";
             }
 
-            return new TileDTO(number, colorStr, isJoker);
+            return new TileDTO(String.valueOf(number), colorStr, isJoker);
         }
         return null;
     }

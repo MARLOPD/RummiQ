@@ -8,6 +8,7 @@ public class GameMessageDTO {
     private String type;
     private String roomId;
     private String player;
+    private String ganador;
     private List<List<TileDTO>> groups;
 
     public GameMessageDTO() {
@@ -57,6 +58,14 @@ public class GameMessageDTO {
 
     public void setPlayer(String player) {
         this.player = player;
+    }
+
+    public String getGanador() {
+        return ganador;
+    }
+
+    public void setGanador(String ganador) {
+        this.ganador = ganador;
     }
 
     public List<List<TileDTO>> getGroups() {

@@ -25,10 +25,10 @@ public class TileBag {
 
         for (int serie = 0; serie < 2; serie++) {
             for (int numero = 1; numero <= 13; numero++) {
-                rojas.add(new Ficha(numero, Ficha.Color.ROJO));
-                azules.add(new Ficha(numero, Ficha.Color.AZUL));
-                negras.add(new Ficha(numero, Ficha.Color.NEGRO));
-                amarillas.add(new Ficha(numero, Ficha.Color.AMARILLO));
+                rojas.add(new Ficha(String.valueOf(numero), Ficha.Color.RED));
+                azules.add(new Ficha(String.valueOf(numero), Ficha.Color.BLUE));
+                negras.add(new Ficha(String.valueOf(numero), Ficha.Color.BLACK));
+                amarillas.add(new Ficha(String.valueOf(numero), Ficha.Color.YELLOW));
             }
         }
 
@@ -48,8 +48,8 @@ public class TileBag {
         }
 
         // Agregar comodines
-        fichas.add(new Ficha(Ficha.Color.NEGRO));
-        fichas.add(new Ficha(Ficha.Color.ROJO));
+        fichas.add(new Ficha(Ficha.Color.BLACK));
+        fichas.add(new Ficha(Ficha.Color.RED));
 
         // Shuffle final
         Collections.shuffle(fichas);

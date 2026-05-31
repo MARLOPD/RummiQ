@@ -86,9 +86,9 @@ public class ValidateGame {
             return Resultado.error("Un grupo puede tener como máximo 4 fichas.");
         }
 
-        int numero = normales.get(0).getNumero();
+        int numero = Integer.parseInt(normales.get(0).getNumero());
         for (Ficha f : normales) {
-            if (!f.getNumero().equals(numero)) {
+            if (Integer.parseInt(f.getNumero()) != numero) {
                 return Resultado.error("En un grupo todas las fichas deben tener el mismo número.");
             }
         }
@@ -116,18 +116,19 @@ public class ValidateGame {
         }
 
         List<Ficha> ordenadas = normales.stream()
-                .sorted(Comparator.comparingInt(Ficha::getNumero))
+                .sorted(Comparator.comparingInt(f -> Integer.parseInt(f.getNumero())))
                 .collect(Collectors.toList());
 
         for (int i = 1; i < ordenadas.size(); i++) {
-            if (ordenadas.get(i).getNumero().equals(ordenadas.get(i - 1).getNumero())) {
+            if (Integer.parseInt(ordenadas.get(i).getNumero()) == Integer.parseInt(ordenadas.get(i - 1).getNumero())) {
                 return Resultado.error("En una escalera no puede haber fichas con el mismo número.");
             }
         }
 
         int huecos = 0;
         for (int i = 1; i < ordenadas.size(); i++) {
-            int salto = ordenadas.get(i).getNumero() - ordenadas.get(i - 1).getNumero() - 1;
+            int salto = Integer.parseInt(ordenadas.get(i).getNumero())
+                    - Integer.parseInt(ordenadas.get(i - 1).getNumero()) - 1;
             if (salto < 0) {
                 return Resultado.error("Los números de la escalera no son válidos.");
             }
@@ -139,8 +140,8 @@ public class ValidateGame {
                     "Faltan " + (huecos - comodines) + " ficha(s) para completar la escalera consecutiva.");
         }
 
-        int min = ordenadas.get(0).getNumero();
-        int max = ordenadas.get(ordenadas.size() - 1).getNumero();
+        int min = Integer.parseInt(ordenadas.get(0).getNumero());
+        int max = Integer.parseInt(ordenadas.get(ordenadas.size() - 1).getNumero());
         int comodinesSobrantes = comodines - huecos;
         if (min - comodinesSobrantes < 1 && max + comodinesSobrantes > 13) {
             return Resultado.error("La escalera excede el rango válido (1-13).");
@@ -153,7 +154,7 @@ public class ValidateGame {
         return grupos.stream()
                 .flatMap(List::stream)
                 .filter(f -> !f.isEsComodin())
-                .mapToInt(Ficha::getNumero)
+                .mapToInt(f -> Integer.parseInt(f.getNumero()))
                 .sum();
     }
 }
