@@ -33,7 +33,7 @@ public class MainScene {
 
     public MainScene(Stage stage) {
         this.stage = stage;
-        com.rummyq.websocket.GameWebSocketClient.getInstance().connect("ws://rummiqback.onrender.com/ws/game");
+        com.rummyq.websocket.GameWebSocketClient.getInstance().connect("wss://rummiqback.onrender.com/ws/game");
 
         actions = new MainSceneActions(stage);
         components = new MainSceneIndividuals(actions);
