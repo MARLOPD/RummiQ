@@ -174,12 +174,17 @@ Cliente WebSocket para comunicación en tiempo real:
 
 ```java
 public class GameWebSocketClient {
-    private static final String WS_URL = "ws://localhost:8080/ws/game";
-    
-    public void connect();
-    public void send(String message);
-    public void disconnect();
+    public void connect(String uriStr);
+    public void startGame();
+    public void joinGame();
+    public void enviarJugada(List<List<TileDTO>> groups);
+    public void passTurn();
 }
+```
+
+La conexión se inicia en `com.rummyq.view.MainScene.java`:
+```java
+com.rummyq.websocket.GameWebSocketClient.getInstance().connect("ws://rummiqback.onrender.com/ws/game");
 ```
 
 **Responsabilidades**:
@@ -524,10 +529,10 @@ jvisualvm
 
 ```bash
 # Verificar que el servidor está corriendo
-curl http://localhost:8080/api/health
+curl https://rummiqback.onrender.com/api/health
 
-# Cambiar URL en GameWebSocketClient.java
-private static final String WS_URL = "ws://localhost:8080/ws/game";
+# Cambiar URL en MainScene.java
+com.rummyq.websocket.GameWebSocketClient.getInstance().connect("ws://rummiqback.onrender.com/ws/game");
 ```
 
 ### Error: "Module not found"

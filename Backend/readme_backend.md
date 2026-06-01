@@ -447,30 +447,27 @@ Los logs se guardan en:
 
 ```bash
 # Health Check
-curl http://localhost:8080/api/health
+curl https://rummiqback.onrender.com/api/health
 
-# Información de la aplicación
-curl http://localhost:8080/api/info
-
-# Estado de conexiones WebSocket
-curl http://localhost:8080/api/websocket/status
+#  WebSocket
+curl https://rummiqback.onrender.com/ws/game
 ```
 
 ### Testear API con cURL
 
 ```bash
 # Registrar usuario
-curl -X POST http://localhost:8080/api/auth/register \
+curl -X POST https://rummiqback.onrender.com/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"pass123","nombre":"Usuario"}'
 
 # Iniciar sesión
-curl -X POST http://localhost:8080/api/auth/login \
+curl -X POST https://rummiqback.onrender.com/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"pass123"}'
 
 # Crear sala
-curl -X POST http://localhost:8080/api/rooms \
+curl -X POST https://rummiqback.onrender.com/api/rooms \
   -H "Content-Type: application/json" \
   -d '{"nombre":"Mi Sala","maxJugadores":4}'
 ```
@@ -483,7 +480,7 @@ Usar herramientas como:
 - **Browser DevTools**: Inspeccionar conexiones
 
 ```bash
-wscat -c ws://localhost:8080/ws/game
+wscat -c ws://rummiqback.onrender.com/ws/game
 ```
 
 ---
@@ -494,11 +491,11 @@ wscat -c ws://localhost:8080/ws/game
 
 ```bash
 # Todas las métricas
-curl http://localhost:8080/actuator
+curl https://rummiqback.onrender.com/actuator
 
 # Métricas específicas
-curl http://localhost:8080/actuator/metrics/jvm.memory.used
-curl http://localhost:8080/actuator/health
+curl https://rummiqback.onrender.com/actuator/metrics/jvm.memory.used
+curl https://rummiqback.onrender.com/actuator/health
 ```
 
 ---
@@ -553,7 +550,7 @@ kill -9 <PID>
 ### Error: "WebSocket connection failed"
 ```bash
 # Verificar que WebSocket está habilitado
-curl http://localhost:8080/api/websocket/status
+curl https://rummiqback.onrender.com/ws/game
 
 # Revisar logs del servidor
 tail -f logs/rummiq-dev.log

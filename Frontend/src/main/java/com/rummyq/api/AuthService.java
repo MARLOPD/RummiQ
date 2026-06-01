@@ -10,7 +10,7 @@ import java.net.http.HttpResponse;
 
 public class AuthService {
 
-    private static final String BASE_URL = "http://localhost:8080/api";
+    private static final String BASE_URL = "https://rummiqback.onrender.com/api";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 

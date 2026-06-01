@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rummyq.model.User;
 
 public class RecoveryPasswordService {
-    private static final String BASE_URL = "http://localhost:8080/api";
+    private static final String BASE_URL = "https://rummiqback.onrender.com/api";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
