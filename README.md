@@ -143,13 +143,13 @@ jwt.expiration=86400000
 
 ### Frontend
 
-La aplicación frontend se conecta automáticamente al backend en `ws://localhost:8080/ws/game`.
+La aplicación frontend se conecta automáticamente al backend en `ws://rummiqback.onrender.com/ws/game`.
 
 Para cambiar la URL del servidor, editar:
-- `Frontend/src/main/java/com/rummyq/websocket/GameWebSocketClient.java`
+- `Frontend/src/main/java/com/rummyq/view/MainScene.java`
 
 ```java
-private static final String WS_URL = "ws://localhost:8080/ws/game";
+com.rummyq.websocket.GameWebSocketClient.getInstance().connect("ws://rummiqback.onrender.com/ws/game");
 ```
 
 ---
@@ -165,7 +165,7 @@ cd Backend/rummyq-backend
 mvn spring-boot:run
 ```
 
-El servidor estará disponible en `http://localhost:8080`
+El servidor estará disponible en `https://rummiqback.onrender.com`
 
 #### Frontend (Terminal 2)
 
