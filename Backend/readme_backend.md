@@ -33,7 +33,7 @@ El backend de RummiQ es un servidor **Spring Boot** que proporciona:
 - **Gestión de Salas**: Creación y administración dinámica de salas de juego
 - **Lógica de Juego**: Validación inteligente de jugadas y sincronización de estado
 - **Comunicación en Tiempo Real**: WebSocket para actualizaciones instantáneas
-- **Persistencia de Datos**: Base de datos MySQL con JPA/Hibernate
+- **Persistencia de Datos**: Base de datos PostgreSQL alojada en Supabase
 
 ---
 
@@ -41,7 +41,6 @@ El backend de RummiQ es un servidor **Spring Boot** que proporciona:
 
 - **Java**: 21 o superior
 - **Maven**: 3.8.0 o superior
-- **MySQL**: 8.0 o superior
 - **Git**: Para clonar el repositorio
 
 ### Requisitos Opcionales
@@ -55,17 +54,19 @@ El backend de RummiQ es un servidor **Spring Boot** que proporciona:
 ### 1. Clonar el Repositorio
 
 ```bash
-git clone https://github.com/tuusuario/RummiQ.git
+git clone https://github.com/MARLOPD/RummiQ.git
 cd RummiQ/Backend/rummyq-backend
 ```
 
-### 2. Crear Base de Datos
+### 2. Conectar Base de Datos
 
-```sql
-CREATE DATABASE rummiq;
-CREATE USER 'rummiq_user'@'localhost' IDENTIFIED BY 'secure_password';
-GRANT ALL PRIVILEGES ON rummiq.* TO 'rummiq_user'@'localhost';
-FLUSH PRIVILEGES;
+
+La conexión a la base de datos se realiza mediante una connectionString, por ello es necesario tener los valores de las variables de entorno:
+
+```
+RUMMYQ_SUPABASE_USER = {usuario}
+RUMMYQ_SUPABASE_URL = {url}
+RUMMYQ_SUPABASE_PASSWORD = {password}
 ```
 
 ### 3. Instalar Dependencias
@@ -78,56 +79,14 @@ mvn clean install
 
 ## ⚙️ Configuración
 
-### application.properties
-
-Editar `src/main/resources/application.properties`:
-
-```properties
-# ===========================
-# DataSource Configuration
-# ===========================
-spring.datasource.url=jdbc:mysql://localhost:3306/rummiq?useSSL=false&serverTimezone=UTC
-spring.datasource.username=rummiq_user
-spring.datasource.password=secure_password
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
-# ===========================
-# JPA/Hibernate Configuration
-# ===========================
-spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=false
-spring.jpa.properties.hibernate.format_sql=true
-
-# ===========================
-# Application Configuration
-# ===========================
-spring.application.name=rummiq-backend
-server.port=8080
-server.servlet.context-path=/api
-
-# ===========================
-# WebSocket Configuration
-# ===========================
-spring.websocket.allowed-origins=http://localhost:*
-
-# ===========================
-# Logging Configuration
-# ===========================
-logging.level.root=INFO
-logging.level.com.rummyq.backend=DEBUG
-logging.level.org.springframework.web=DEBUG
-```
-
 ### Variables de Entorno
 
 Alternativamente, puedes usar variables de entorno:
 
 ```bash
-export DB_URL=jdbc:mysql://localhost:3306/rummiq
-export DB_USER=rummiq_user
-export DB_PASSWORD=secure_password
-export SERVER_PORT=8080
+export RUMMYQ_SUPABASE_USER={usuario}
+export RUMMYQ_SUPABASE_URL={url}
+export RUMMYQ_SUPABASE_PASSWORD={password}
 ```
 
 ---
@@ -135,60 +94,58 @@ export SERVER_PORT=8080
 ## 📁 Estructura del Proyecto
 
 ```
-rummyq-backend/
-├── src/main/java/com/rummyq/backend/
-│   ├── BackendApplication.java           # Punto de entrada
-│   ├── config/
-│   │   ├── WebSocketConfig.java          # Configuración WebSocket
-│   │   ├── JpaConfig.java                # Configuración JPA
-│   │   └── SecurityConfig.java           # Seguridad (si aplica)
-│   ├── controllers/
-│   │   ├── AuthController.java           # Autenticación
-│   │   ├── UserController.java           # Gestión de usuarios
-│   │   ├── RoomController.java           # Gestión de salas
-│   │   └── GameController.java           # Estado del juego
-│   ├── models/
-│   │   ├── User.java                     # Entidad Usuario
-│   │   ├── GameRoom.java                 # Entidad Sala
-│   │   ├── Jugador.java                  # Entidad Jugador
-│   │   ├── Ficha.java                    # Entidad Ficha
-│   │   ├── GameStatus.java               # Estado del juego
-│   │   └── ValidateGame.java             # Validación de jugadas
-│   ├── repositories/
-│   │   ├── UserRepository.java           # Acceso a usuarios
-│   │   ├── GameRoomRepository.java       # Acceso a salas
-│   │   ├── JugadorRepository.java        # Acceso a jugadores
-│   │   └── FichaRepository.java          # Acceso a fichas
-│   ├── services/
-│   │   ├── AuthService.java              # Lógica autenticación
-│   │   ├── UserService.java              # Lógica usuarios
-│   │   ├── RoomService.java              # Lógica salas
-│   │   ├── GameService.java              # Lógica del juego
-│   │   └── ValidateGameService.java      # Validación de jugadas
-│   ├── websocket/
-│   │   ├── handlers/
-│   │   │   ├── GameWebSocketHandler.java # Manejador principal
-│   │   │   └── MessageHandler.java       # Procesamiento de mensajes
-│   │   ├── dto/
-│   │   │   ├── GameStatusDTO.java        # DTO de estado del juego
-│   │   │   ├── PlayDTO.java              # DTO de jugadas
-│   │   │   └── MessageDTO.java           # DTO de mensajes
-│   │   └── GameSessionManager.java       # Gestión de sesiones
-│   └── utils/
-│       ├── HashUtil.java                 # Utilidades de hash
-│       ├── JwtUtil.java                  # Utilidades JWT (si aplica)
-│       └── ValidationUtil.java           # Validaciones generales
-├── src/main/resources/
-│   ├── application.properties             # Configuración principal
-│   ├── application-dev.properties         # Configuración desarrollo
-│   ├── application-prod.properties        # Configuración producción
-│   ├── schema/
-│   │   ├── schema.sql                     # DDL de tablas
-│   │   └── data.sql                       # Datos iniciales
-│   └── logback-spring.xml                 # Configuración logging
-├── src/test/java/                         # Tests unitarios
-├── pom.xml                                # Dependencias Maven
-└── Dockerfile                             # Configuración Docker
+. 📂 Backend
+├── 📄 readme_backend.md
+└── 📂 rummyq-backend/
+│  ├── 📄 Dockerfile
+│  ├── 📄 pom.xml
+│  └── 📂 src/
+│    └── 📂 main/
+│      └── 📂 java/
+│        └── 📂 com/
+│          └── 📂 rummyq/
+│            └── 📂 backend/
+│              ├── 📄 BackendApplication.java
+│              └── 📂 config/
+│                ├── 📄 BCryptEncryption.java
+│                ├── 📄 DatabaseConnection.java
+│              └── 📂 controllers/
+│                ├── 📄 AuthController.java
+│                ├── 📄 ChatController.java
+│                ├── 📄 GameController.java
+│                ├── 📄 HealthController.java
+│              └── 📂 models/
+│                ├── 📄 Ficha.java
+│                ├── 📄 Jugador.java
+│                ├── 📄 LoginRequirements.java
+│                ├── 📄 Mensaje.java
+│                ├── 📄 MensajeDTO.java
+│                ├── 📄 Partida.java
+│                ├── 📄 PartidaDTO.java
+│                ├── 📄 RegistrationRequirements.java
+│                ├── 📄 StartRequest.java
+│              └── 📂 repositories/
+│                ├── 📄 ChatRepository.java
+│                ├── 📄 RecoveryPasswordRepository.java
+│                ├── 📄 UserRepository.java
+│              └── 📂 services/
+│                ├── 📄 ChatService.java
+│                ├── 📄 GameSessionManager.java
+│                ├── 📄 JugadorService.java
+│                ├── 📄 PartidaMapper.java
+│                ├── 📄 PartidaService.java
+│                ├── 📄 PasswordRecovery.java
+│                ├── 📄 TileBag.java
+│                ├── 📄 UserManagment.java
+│                ├── 📄 ValidateGame.java
+│              └── 📂 websocket/
+│                ├── 📄 GameMessage.java
+│                ├── 📄 GameStatus.java
+│                └── 📂 config/
+│                  ├── 📄 WebSocketConfig.java
+│                └── 📂 handlers/
+│                  ├── 📄 GameWebSocketHandler.java
+│  └── 📂 target/
 ```
 
 ---
@@ -199,51 +156,38 @@ rummyq-backend/
 
 #### AuthController
 ```java
-POST   /api/auth/register      # Registrar usuario
-POST   /api/auth/login         # Iniciar sesión
-POST   /api/auth/recover       # Recuperar contraseña
-POST   /api/auth/logout        # Cerrar sesión
-```
-
-#### RoomController
-```java
-POST   /api/rooms              # Crear sala
-GET    /api/rooms              # Listar salas
-GET    /api/rooms/{id}         # Obtener sala
-POST   /api/rooms/{id}/join    # Unirse a sala
-POST   /api/rooms/{id}/leave   # Salir de sala
-DELETE /api/rooms/{id}         # Eliminar sala
+POST   /api/signup             # Registrar usuario
+POST   /api/login              # Iniciar sesión
+POST   /api/findUser           # Recuperar contraseña
+POST   /api/updatePassword     # Actualizar contraseña
+POST   /api/verifyAnswer       # Verificar respuesta de seguridad
 ```
 
 #### GameController
 ```java
-GET    /api/games/{roomId}     # Obtener estado del juego
-POST   /api/games/{roomId}/play # Realizar jugada
-GET    /api/games/{roomId}/status # Estado actualizado
+POST   /api/game/start # Iniciar partida
+```
+
+### HealthController
+```java
+GET    /api/health # Verificar estado del servidor
 ```
 
 ### Services
 
-#### GameService
+#### GameSessionManager
 Gestiona la lógica principal del juego:
 - Inicialización de partidas
 - Distribución de fichas
 - Manejo de turnos
 - Detección de ganador
 
-#### ValidateGameService
+#### ValidateGame
 Valida movimientos de jugadores:
 - Comprobación de grupos y escaleras
 - Validación de comodines
 - Verificación de tiles disponibles
 - Detección de movimientos inválidos
-
-#### RoomService
-Gestiona las salas de juego:
-- Creación de salas
-- Adición/remoción de jugadores
-- Inicio automático cuando hay 2+ jugadores
-- Limpieza de salas vacías
 
 ### WebSocket Handlers
 
@@ -252,157 +196,309 @@ Maneja la comunicación WebSocket:
 - Conexión/desconexión de clientes
 - Enrutamiento de mensajes
 - Sincronización de estado
-- Notificaciones a jugadores
+- Notificaciones a jugadoresz
 
 ---
 
 ## 📡 WebSocket API
 
-### Estructura de Mensajes
+# 🎲 RummyQ WebSocket — Guía de Mensajes
 
-Los mensajes WebSocket usan formato JSON:
+**Endpoint:** `ws://localhost:8080/ws/game`
+
+---
+
+## 📤 Mensajes: Cliente → Servidor
+
+### 1. `UNIRSE` — Unirse a una sala
 
 ```json
 {
-  "type": "PLAY",
-  "gameRoomId": "12345",
-  "userId": "user123",
-  "payload": {
-    "tiles": [...],
-    "action": "place"
-  }
+  "type": "UNIRSE",
+  "roomId": "sala-001",
+  "player": "Alice"
 }
 ```
 
-### Tipos de Mensajes
+> [!NOTE]
+> El `roomId` puede ser cualquier string. Si la sala no existe, se crea automáticamente.
+> Mínimo 2 jugadores, máximo 4.
 
-#### PLAY
-Envío de jugada desde cliente
+---
 
-**Request**:
+### 2. `INICIAR_PARTIDA` — Iniciar el juego
+
 ```json
 {
-  "type": "PLAY",
-  "tiles": [
-    {"color": "RED", "numero": 5},
-    {"color": "RED", "numero": 6},
-    {"color": "RED", "numero": 7}
+  "type": "INICIAR_PARTIDA",
+  "roomId": "sala-001"
+}
+```
+
+> [!IMPORTANT]
+> Solo se puede iniciar con ≥2 jugadores ya unidos a la sala.
+> Tras iniciar, cada jugador recibe su mano privada (14 fichas).
+
+---
+
+### 3. `JUGAR_GRUPO` — Colocar fichas en la mesa
+
+Coloca uno o más grupos/escaleras. Cada grupo es un array de fichas.
+
+#### Ejemplo: un grupo (mismo número, colores distintos)
+```json
+{
+  "type": "JUGAR_GRUPO",
+  "groups": [
+    [
+      { "numero": 7, "color": "ROJO",    "esComodin": false },
+      { "numero": 7, "color": "AZUL",    "esComodin": false },
+      { "numero": 7, "color": "NEGRO",   "esComodin": false }
+    ]
   ]
 }
 ```
 
-**Response**:
+#### Ejemplo: una escalera (mismo color, consecutivos)
 ```json
 {
-  "type": "PLAY_RESULT",
-  "success": true,
-  "message": "Jugada válida",
-  "gameStatus": {
-    "tablero": [...],
-    "turnoActual": "user456",
-    "fichasRestantes": {"user123": 12}
-  }
+  "tipo": "JUGAR_GRUPO",
+  "grupos": [
+    [
+      { "numero": 5, "color": "ROJO", "esComodin": false },
+      { "numero": 6, "color": "ROJO", "esComodin": false },
+      { "numero": 7, "color": "ROJO", "esComodin": false }
+    ]
+  ]
 }
 ```
 
-#### STATUS_UPDATE
-Actualización de estado del juego
-
-**Broadcast**:
+#### Ejemplo: escalera con comodín
 ```json
 {
-  "type": "STATUS_UPDATE",
-  "gameStatus": {
-    "jugadores": [...],
-    "tablero": [...],
-    "turnoActual": "user123"
-  }
+  "tipo": "JUGAR_GRUPO",
+  "grupos": [
+    [
+      { "numero": 5,    "color": "AZUL",  "esComodin": false },
+      { "numero": null, "color": "NEGRO", "esComodin": true  },
+      { "numero": 7,    "color": "AZUL",  "esComodin": false }
+    ]
+  ]
 }
 ```
 
-#### FIN_PARTIDA
-Fin de la partida
-
-**Broadcast**:
+#### Ejemplo: apertura (primera jugada — debe sumar ≥30 pts)
 ```json
 {
-  "type": "FIN_PARTIDA",
-  "ganador": "user123",
-  "puntos": {
-    "user123": 100,
-    "user456": -50
-  }
+  "type": "JUGAR_GRUPO",
+  "groups": [
+    [
+      { "numero": 10, "color": "ROJO",     "esComodin": false },
+      { "numero": 10, "color": "AZUL",     "esComodin": false },
+      { "numero": 10, "color": "NEGRO",    "esComodin": false }
+    ],
+    [
+      { "numero": 11, "color": "AMARILLO", "esComodin": false },
+      { "numero": 12, "color": "AMARILLO", "esComodin": false },
+      { "numero": 13, "color": "AMARILLO", "esComodin": false }
+    ]
+  ]
 }
 ```
+> 10+10+10 + 11+12+13 = **66 puntos** ✅
 
-#### ROOM_UPDATE
-Actualización de jugadores en sala
+---
 
-**Broadcast**:
+### 4. `ROBAR_FICHA` — Robar del mazo (y pasar turno)
+
 ```json
 {
-  "type": "ROOM_UPDATE",
-  "jugadores": ["user123", "user456"],
-  "estado": "ESPERANDO"
+  "tipo": "ROBAR_FICHA"
 }
 ```
 
 ---
 
-## 🗄️ Base de Datos
+### 5. `PASAR_TURNO` — Pasar el turno
 
-### Diagrama de Tablas
-
+```json
+{
+  "tipo": "PASAR_TURNO"
+}
 ```
-┌─────────────┐
-│    users    │
-├─────────────┤
-│ id (PK)     │
-│ email (UQ)  │
-│ password    │
-│ nombre      │
-│ created_at  │
-└─────────────┘
-
-┌─────────────────────┐
-│    game_rooms       │
-├─────────────────────┤
-│ id (PK)             │
-│ nombre              │
-│ host_id (FK)        │
-│ estado              │
-│ max_jugadores = 4   │
-│ created_at          │
-└─────────────────────┘
-
-┌─────────────────────────┐
-│   room_jugadores        │
-├─────────────────────────┤
-│ room_id (FK)            │
-│ user_id (FK)            │
-│ posicion                │
-│ ficha_hand (JSON)       │
-│ ficha_mesa (JSON)       │
-└─────────────────────────┘
-
-┌─────────────────────┐
-│    fichas           │
-├─────────────────────┤
-│ id (PK)             │
-│ color               │
-│ numero              │
-│ game_room_id (FK)   │
-│ propietario_id (FK) │
-└─────────────────────┘
-```
-
-### Scripts SQL
-
-Ver `src/main/resources/schema/` para:
-- `schema.sql` - Creación de tablas
-- `data.sql` - Datos iniciales (usuarios de prueba)
 
 ---
+
+## 📥 Mensajes: Servidor → Cliente
+
+### `ESTADO_PARTIDA` — Estado público (broadcast a todos)
+
+```json
+{
+  "tipo": "ESTADO_PARTIDA",
+  "estado": {
+    "roomId": "sala-001",
+    "fase": "EN_CURSO",
+    "turno": "Alice",
+    "fichasRestantes": 78,
+    "jugadores": [
+      { "nombre": "Alice", "cantFichas": 14, "puntos": 87 },
+      { "nombre": "Bob",   "cantFichas": 13, "puntos": 45 }
+    ],
+    "mesa": [
+      [
+        { "numero": 7, "color": "ROJO",  "esComodin": false },
+        { "numero": 7, "color": "AZUL",  "esComodin": false },
+        { "numero": 7, "color": "NEGRO", "esComodin": false }
+      ]
+    ]
+  }
+}
+```
+
+| `fase` | Significado |
+|--------|-------------|
+| `ESPERANDO` | Sala de espera, esperando jugadores |
+| `EN_CURSO` | Partida en progreso |
+| `TERMINADA` | Partida finalizada |
+
+---
+
+### `MANO_JUGADOR` — Mano privada (unicast al jugador)
+
+```json
+{
+  "tipo": "MANO_JUGADOR",
+  "fichas": [
+    { "numero": 3,    "color": "ROJO",    "esComodin": false },
+    { "numero": 7,    "color": "AZUL",    "esComodin": false },
+    { "numero": 7,    "color": "NEGRO",   "esComodin": false },
+    { "numero": 7,    "color": "AMARILLO","esComodin": false },
+    { "numero": 11,   "color": "ROJO",    "esComodin": false },
+    { "numero": null, "color": "NEGRO",   "esComodin": true  }
+  ]
+}
+```
+
+---
+
+### `RESULTADO_JUGADA` — Resultado de una jugada (unicast)
+
+```json
+// Jugada aceptada
+{ "tipo": "RESULTADO_JUGADA", "ok": true, "motivo": null }
+
+// Jugada rechazada
+{ "tipo": "RESULTADO_JUGADA", "ok": false, "motivo": "La apertura debe sumar al menos 30 puntos. Tu jugada suma 18." }
+
+// Otros motivos posibles:
+// "Cada combinación debe tener al menos 3 fichas."
+// "En un grupo todas las fichas deben tener el mismo número."
+// "En un grupo no puede haber dos fichas del mismo color."
+// "En una escalera todas las fichas deben ser del mismo color."
+// "Faltan N ficha(s) para completar la escalera consecutiva."
+// "No es tu turno."
+// "No tienes la ficha X en tu mano."
+```
+
+---
+
+### `TURNO` — Indica quién juega ahora (broadcast)
+
+```json
+{ "tipo": "TURNO", "jugador": "Bob" }
+```
+
+---
+
+### `FIN_PARTIDA` — El juego terminó (broadcast)
+
+```json
+{ "tipo": "FIN_PARTIDA", "ganador": "Alice" }
+```
+
+---
+
+### `ERROR` — Error genérico (unicast)
+
+```json
+{ "tipo": "ERROR", "mensaje": "No estás en ninguna sala. Envía UNIRSE primero." }
+```
+
+---
+
+## 🎯 Colores válidos
+
+| Valor JSON | Descripción |
+|------------|-------------|
+| `"ROJO"` | Rojo |
+| `"AZUL"` | Azul |
+| `"NEGRO"` | Negro |
+| `"AMARILLO"` | Amarillo |
+
+> [!CAUTION]
+> Los colores deben ir en **MAYÚSCULAS** exactamente como aparecen arriba.
+
+---
+
+## 🧪 Flujo completo de prueba (2 jugadores)
+
+```
+1. Jugador 1 conecta a ws://localhost:8080/ws/game
+2. Jugador 2 conecta a ws://localhost:8080/ws/game
+
+3. Jugador 1 envía: UNIRSE { roomId: "sala-001", jugador: "Alice" }
+   ← Ambos reciben: ESTADO_PARTIDA (fase: ESPERANDO, 1 jugador)
+
+4. Jugador 2 envía: UNIRSE { roomId: "sala-001", jugador: "Bob" }
+   ← Ambos reciben: ESTADO_PARTIDA (fase: ESPERANDO, 2 jugadores)
+
+5. Jugador 1 envía: INICIAR_PARTIDA { roomId: "sala-001" }
+   ← Alice recibe:  MANO_JUGADOR (sus 14 fichas)
+   ← Bob recibe:    MANO_JUGADOR (sus 14 fichas)
+   ← Ambos reciben: ESTADO_PARTIDA (fase: EN_CURSO)
+   ← Ambos reciben: TURNO { jugador: "Alice" }
+
+6. Alice envía: JUGAR_GRUPO (con fichas de su mano que sumen ≥30)
+   ← Alice recibe:  RESULTADO_JUGADA { ok: true }
+   ← Alice recibe:  MANO_JUGADOR (mano actualizada)
+   ← Ambos reciben: ESTADO_PARTIDA (mesa actualizada)
+   ← Ambos reciben: TURNO { jugador: "Bob" }
+
+7. Bob envía: ROBAR_FICHA
+   ← Bob recibe:    MANO_JUGADOR (con ficha nueva)
+   ← Ambos reciben: ESTADO_PARTIDA
+   ← Ambos reciben: TURNO { jugador: "Alice" }
+```
+
+---
+
+## 🛠 Herramientas para probar
+
+### Opción 1: Postman
+1. Nueva pestaña → **WebSocket Request**
+2. URL: `ws://localhost:8080/ws/game`
+3. Conectar → pegar JSON en el campo de mensaje → Send
+
+### Opción 2: JavaScript (en consola del navegador)
+```javascript
+const ws = new WebSocket('ws://localhost:8080/ws/game');
+
+ws.onmessage = (e) => console.log('← ', JSON.parse(e.data));
+
+// Enviar mensaje
+ws.send(JSON.stringify({
+  tipo: "UNIRSE",
+  roomId: "sala-001",
+  jugador: "Alice"
+}));
+```
+
+### Opción 3: websocat (CLI)
+```bash
+websocat ws://localhost:8080/ws/game
+# Luego escribir el JSON directamente
+```
 
 ## ▶️ Ejecutar el Servidor
 
@@ -437,12 +533,6 @@ docker run -p 8080:8080 rummiq-backend
 
 ## 🧪 Debugging
 
-### Logs
-
-Los logs se guardan en:
-- **Desarrollo**: Consola + `logs/rummiq-dev.log`
-- **Producción**: `logs/rummiq-prod.log`
-
 ### Endpoints de Debugging
 
 ```bash
@@ -457,19 +547,14 @@ curl https://rummiqback.onrender.com/ws/game
 
 ```bash
 # Registrar usuario
-curl -X POST https://rummiqback.onrender.com/api/auth/register \
+curl -X POST https://rummiqback.onrender.com/api/signup \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"pass123","nombre":"Usuario"}'
 
 # Iniciar sesión
-curl -X POST https://rummiqback.onrender.com/api/auth/login \
+curl -X POST https://rummiqback.onrender.com/api/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"pass123"}'
-
-# Crear sala
-curl -X POST https://rummiqback.onrender.com/api/rooms \
-  -H "Content-Type: application/json" \
-  -d '{"nombre":"Mi Sala","maxJugadores":4}'
 ```
 
 ### Testear WebSocket
@@ -480,7 +565,7 @@ Usar herramientas como:
 - **Browser DevTools**: Inspeccionar conexiones
 
 ```bash
-wscat -c ws://rummiqback.onrender.com/ws/game
+wscat -c wss://rummiqback.onrender.com/ws/game
 ```
 
 ---
@@ -506,8 +591,8 @@ curl https://rummiqback.onrender.com/actuator/health
 
 - ✅ **Hashing de Contraseñas**: BCrypt
 - ✅ **Validación de Input**: Prevención de inyecciones SQL
-- ✅ **CORS**: Configurado para desarrollo
-- ✅ **WebSocket Seguro**: Validación de conexiones
+- ✅ **CORS**: Pendiente por configurar
+- ✅ **WebSocket**: Validación de conexiones 
 
 ### Mejoras Futuras
 
@@ -528,15 +613,6 @@ curl https://rummiqback.onrender.com/actuator/health
 
 ## 🆘 Troubleshooting
 
-### Error: "Cannot connect to database"
-```bash
-# Verificar que MySQL está corriendo
-mysql -u rummiq_user -p
-
-# Verificar propiedades de conexión
-cat src/main/resources/application.properties | grep datasource
-```
-
 ### Error: "Port 8080 already in use"
 ```bash
 # Cambiar puerto en application.properties
@@ -551,9 +627,6 @@ kill -9 <PID>
 ```bash
 # Verificar que WebSocket está habilitado
 curl https://rummiqback.onrender.com/ws/game
-
-# Revisar logs del servidor
-tail -f logs/rummiq-dev.log
 ```
 
 ---
@@ -563,15 +636,16 @@ tail -f logs/rummiq-dev.log
 | Versión | Fecha | Cambios |
 |---------|-------|---------|
 | 1.0.0 | Mayo 2026 | Lanzamiento inicial |
+| 1.0.1 | Junio 2026 | Implementar para multiplayer |
 
 ---
 
 ## 📞 Contacto y Soporte
 
-Para problemas técnicos o preguntas sobre el backend, contacta al equipo de desarrollo.
+Para problemas técnicos o preguntas sobre el backend, contacta al equipo de desarrollo o deja una **Issue** en el repositorio.
 
 ---
 
-**Última actualización**: Mayo 2026  
-**Versión**: 1.0.0
+**Última actualización**: Junio 2026  
+**Versión**: 1.0.1
 
