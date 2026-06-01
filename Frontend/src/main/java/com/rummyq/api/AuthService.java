@@ -1,6 +1,8 @@
 package com.rummyq.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rummyq.model.User;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -29,8 +31,11 @@ public class AuthService {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            return Boolean.parseBoolean(response.body());
+            boolean validation = Boolean.parseBoolean(response.body());
+            if (validation) {
+                User.setEmail(email);
+            }
+            return validation;
 
         } catch (Exception e) {
             System.err.println("Error en la conexión con el servidor: " + e.getMessage());
@@ -38,5 +43,6 @@ public class AuthService {
         }
     }
 
-    private record LoginRequest(String email, String passwordText) {}
+    private record LoginRequest(String email, String passwordText) {
+    }
 }

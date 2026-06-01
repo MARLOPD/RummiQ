@@ -1,23 +1,23 @@
 package com.rummyq.backend.models;
-import java.util.List;
 
+import java.util.List;
 
 public class Ficha {
 
     // Enum de colores
     public enum Color {
-        ROJO, AZUL, NEGRO, AMARILLO
+        RED, BLUE, BLACK, YELLOW
     }
 
     // Atributos
-    private Integer numero;
+    private String numero;
     private Color color;
     private boolean esComodin;
     private boolean estaEnMesa;
     private int posicionEnMano;
 
     // Constructor ficha normal
-    public Ficha(int numero, Color color) {
+    public Ficha(String numero, Color color) {
         this.numero = numero;
         this.color = color;
         this.esComodin = false;
@@ -35,27 +35,49 @@ public class Ficha {
     }
 
     // Getters
-    public Integer getNumero() { return numero; }
-    public Color getColor() { return color; }
-    public boolean isEsComodin() { return esComodin; }
-    public boolean isEstaEnMesa() { return estaEnMesa; }
-    public int getPosicionEnMano() { return posicionEnMano; }
+    public String getNumero() {
+        return numero;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public boolean isEsComodin() {
+        return esComodin;
+    }
+
+    public boolean isEstaEnMesa() {
+        return estaEnMesa;
+    }
+
+    public int getPosicionEnMano() {
+        return posicionEnMano;
+    }
 
     // Setters
-    public void setEstaEnMesa(boolean valor) { this.estaEnMesa = valor; }
-    public void setPosicionEnMano(int pos) { this.posicionEnMano = pos; }
+    public void setEstaEnMesa(boolean valor) {
+        this.estaEnMesa = valor;
+    }
+
+    public void setPosicionEnMano(int pos) {
+        this.posicionEnMano = pos;
+    }
 
     // Lógica
     public boolean esIgual(Ficha otra) {
         if (this.esComodin && otra.esComodin)
             return this.color == otra.color;
-        if (this.esComodin || otra.esComodin) return false;
+        if (this.esComodin || otra.esComodin)
+            return false;
         return this.numero.equals(otra.numero) && this.color == otra.color;
     }
 
     public boolean puedeUnirseA(List<Ficha> grupo) {
-        if (esComodin) return true;
-        if (grupo.isEmpty()) return true;
+        if (esComodin)
+            return true;
+        if (grupo.isEmpty())
+            return true;
 
         boolean mismoColor = true;
         boolean mismoNumero = true;

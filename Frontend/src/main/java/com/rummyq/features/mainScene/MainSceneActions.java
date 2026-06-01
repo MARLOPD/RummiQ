@@ -1,6 +1,8 @@
 package com.rummyq.features.mainScene;
 
 import com.rummyq.core.DialogReglas;
+import com.rummyq.core.EnterRoom;
+import com.rummyq.view.GameScene;
 import com.rummyq.view.LoginScene;
 
 import javafx.animation.FadeTransition;
@@ -18,11 +20,8 @@ public class MainSceneActions {
     public void startGame() {
         System.out.println("► FadeOut to GameScene...");
 
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(800), stage.getScene().getRoot());
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-        fadeOut.setOnFinished(e -> System.out.println("→ Game Scene ready"));
-        fadeOut.play();
+        GameScene gameScene = new GameScene(stage);
+        gameScene.showScreen();
     }
 
     public void showLoginScene() {
@@ -40,6 +39,11 @@ public class MainSceneActions {
     public void showRules() {
         DialogReglas dialog = new DialogReglas(stage);
         dialog.mostrar();
+    }
+
+    public void joinGame() {
+        EnterRoom enterRoom = new EnterRoom(stage);
+        enterRoom.mostrar();
     }
 
     public void exitGame() {

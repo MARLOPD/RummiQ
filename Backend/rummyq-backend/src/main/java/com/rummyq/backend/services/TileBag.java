@@ -1,4 +1,5 @@
 package com.rummyq.backend.services;
+
 import java.util.List;
 
 import com.rummyq.backend.models.Ficha;
@@ -7,28 +8,27 @@ import com.rummyq.backend.models.Jugador;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Bolsa {
+public class TileBag {
 
-    private JugadorService jugadorService;
     private List<Ficha> fichas;
 
-    public Bolsa() {
+    public TileBag() {
         fichas = new ArrayList<>();
         generarFichas();
     }
 
     private void generarFichas() {
-        List<Ficha> rojas     = new ArrayList<>();
-        List<Ficha> azules    = new ArrayList<>();
-        List<Ficha> negras    = new ArrayList<>();
+        List<Ficha> rojas = new ArrayList<>();
+        List<Ficha> azules = new ArrayList<>();
+        List<Ficha> negras = new ArrayList<>();
         List<Ficha> amarillas = new ArrayList<>();
 
         for (int serie = 0; serie < 2; serie++) {
             for (int numero = 1; numero <= 13; numero++) {
-                rojas.add(new Ficha(numero, Ficha.Color.ROJO));
-                azules.add(new Ficha(numero, Ficha.Color.AZUL));
-                negras.add(new Ficha(numero, Ficha.Color.NEGRO));
-                amarillas.add(new Ficha(numero, Ficha.Color.AMARILLO));
+                rojas.add(new Ficha(String.valueOf(numero), Ficha.Color.RED));
+                azules.add(new Ficha(String.valueOf(numero), Ficha.Color.BLUE));
+                negras.add(new Ficha(String.valueOf(numero), Ficha.Color.BLACK));
+                amarillas.add(new Ficha(String.valueOf(numero), Ficha.Color.YELLOW));
             }
         }
 
@@ -48,29 +48,34 @@ public class Bolsa {
         }
 
         // Agregar comodines
-        fichas.add(new Ficha(Ficha.Color.NEGRO));
-        fichas.add(new Ficha(Ficha.Color.ROJO));
+        fichas.add(new Ficha(Ficha.Color.BLACK));
+        fichas.add(new Ficha(Ficha.Color.RED));
 
         // Shuffle final
         Collections.shuffle(fichas);
     }
 
     public void repartir(List<Jugador> jugadores) {
-        
         for (Jugador jugador : jugadores) {
             for (int i = 0; i < 14; i++) {
-                jugadorService = new JugadorService(jugador);
-                jugadorService.recibirFicha(fichas.remove(0));
+                Ficha f = fichas.remove(0);
+                jugador.agregarFicha(f);
             }
         }
     }
 
     // En Mazo
     public Ficha robarFicha() {
-        if (fichas.isEmpty()) return null; // indica que no hay fichas
+        if (fichas.isEmpty())
+            return null; // indica que no hay fichas
         return fichas.remove(0);
     }
 
-    public int cantidadRestante() { return fichas.size(); }
-    public boolean estaVacio() { return fichas.isEmpty(); }
+    public int cantidadRestante() {
+        return fichas.size();
+    }
+
+    public boolean estaVacio() {
+        return fichas.isEmpty();
+    }
 }
