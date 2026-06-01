@@ -55,7 +55,7 @@ El frontend de RummiQ es una aplicación JavaFX moderna que proporciona:
 ### 1. Clonar el Repositorio
 
 ```bash
-git clone https://github.com/tuusuario/RummiQ.git
+git clone https://github.com/MARLOPD/RummiQ.git
 cd RummiQ/Frontend
 ```
 
@@ -79,67 +79,81 @@ mvn dependency:resolve
 ## 📁 Estructura del Proyecto
 
 ```
-Frontend/
-├── src/main/java/com/rummyq/
-│   ├── MainApp.java                    # Punto de entrada (Stage)
-│   ├── api/
-│   │   ├── AuthService.java            # Cliente API autenticación
-│   │   ├── RegistrationService.java    # Cliente API registro
-│   │   └── RecoveryPasswordService.java # Cliente API recuperación
-│   ├── core/
-│   │   ├── ComponentFactory.java       # Factory de componentes UI
-│   │   ├── DialogReglas.java           # Diálogo de reglas
-│   │   ├── EnterRoom.java              # Lógica entrada a sala
-│   │   ├── UIColors.java               # Paleta de colores
-│   │   └── WaitingRoom.java            # Lógica sala de espera
-│   ├── features/
-│   │   ├── gameScene/
-│   │   │   ├── GameBoard.java          # Tablero del juego
-│   │   │   ├── GameTiles.java          # Visualización fichas
-│   │   │   ├── GameScene.java          # Escena del juego
-│   │   │   └── GameController.java     # Lógica de la escena
-│   │   ├── loginScene/
-│   │   │   ├── LoginScene.java         # Escena login
-│   │   │   └── LoginController.java    # Lógica login
-│   │   ├── mainScene/
-│   │   │   ├── MainScene.java          # Menú principal
-│   │   │   └── MainController.java     # Lógica menú
-│   │   ├── passwordRecoveryScene/
-│   │   │   ├── PasswordRecoveryScene.java
-│   │   │   └── PasswordRecoveryController.java
-│   │   └── signUp/
-│   │       ├── SignUpScene.java        # Escena registro
-│   │       └── SignUpController.java   # Lógica registro
-│   ├── model/
-│   │   ├── ScreenConfig.java           # Configuración pantalla
-│   │   ├── SignUpForm.java             # Modelo formulario registro
-│   │   └── User.java                   # Modelo usuario
-│   ├── util/
-│   │   └── HashUtil.java               # Utilidades hash
-│   ├── view/
-│   │   ├── GameScene.java              # Vista del juego
-│   │   ├── LoginScene.java             # Vista login
-│   │   ├── MainScene.java              # Vista menú principal
-│   │   ├── PasswordRecoveryScene.java  # Vista recuperación
-│   │   └── SignUpScene.java            # Vista registro
-│   └── websocket/
-│       ├── GameWebScoketHandler.java   # Manejador de mensajes
-│       ├── GameWebSocketClient.java    # Cliente WebSocket
-│       └── dto/
-│           ├── GameStatusDTO.java      # DTO estado juego
-│           ├── PlayDTO.java            # DTO de jugadas
-│           └── MessageDTO.java         # DTO de mensajes
-├── src/main/resources/
-│   ├── assets/                         # Recursos gráficos
-│   │   ├── icons/                      # Iconos de aplicación
-│   │   ├── images/                     # Imágenes
-│   │   ├── styles/
-│   │   │   └── style.css               # Estilos globales
-│   │   └── fonts/                      # Fuentes personalizadas
-│   └── application.properties
-├── src/test/java/                      # Tests unitarios
-├── pom.xml                             # Dependencias Maven
-└── target/                             # Compilación
+. 📂 Frontend
+├── 📄 pom.xml
+├── 📄 readme_frontend.md
+└── 📂 src/
+│  └── 📂 main/
+│    └── 📂 java/
+│      └── 📂 com/
+│        └── 📂 rummyq/
+│          ├── 📄 MainApp.java
+│          └── 📂 api/
+│            ├── 📄 AuthService.java
+│            ├── 📄 RecoveryPasswordService.java
+│            ├── 📄 RegistrationService.java
+│          └── 📂 core/
+│            ├── 📄 ComponentFactory.java
+│            ├── 📄 DialogReglas.java
+│            ├── 📄 EnterRoom.java
+│            ├── 📄 UIColors.java
+│            ├── 📄 WaitingRoom.java
+│          └── 📂 features/
+│            └── 📂 gameScene/
+│              ├── 📄 GameBoard.java
+│              ├── 📄 GameSceneActions.java
+│              ├── 📄 GameSceneIndividuals.java
+│              ├── 📄 GameTiles.java
+│              ├── 📄 PlayerPositions.java
+│            └── 📂 loginScene/
+│              ├── 📄 LoginSceneActions.java
+│              ├── 📄 LoginSceneAnimationEffects.java
+│              ├── 📄 LoginSceneForms.java
+│              ├── 📄 LoginSceneIndividuals.java
+│            └── 📂 mainScene/
+│              ├── 📄 MainSceneActions.java
+│              ├── 📄 MainSceneAnimationEffects.java
+│              ├── 📄 MainSceneIndividuals.java
+│            └── 📂 passwordRecoveryScene/
+│              ├── 📄 RecoverySceneActions.java
+│              ├── 📄 RecoverySceneFormInformation.java
+│              ├── 📄 RecoverySceneForms.java
+│              ├── 📄 RecoverySceneIndividuals.java
+│            └── 📂 signUp/
+│              ├── 📄 SecurityQuestions.java
+│              ├── 📄 SignUpSceneActions.java
+│              ├── 📄 SignUpSceneForms.java
+│              ├── 📄 SignUpSceneIndividuals.java
+│          └── 📂 model/
+│            ├── 📄 ScreenConfig.java
+│            ├── 📄 SignUpForm.java
+│            ├── 📄 User.java
+│          └── 📂 util/
+│            ├── 📄 HashUtil.java
+│          └── 📂 view/
+│            ├── 📄 GameScene.java
+│            ├── 📄 LoginScene.java
+│            ├── 📄 MainScene.java
+│            ├── 📄 PasswordRecoveryScene.java
+│            ├── 📄 SignUpScene.java
+│          └── 📂 websocket/
+│            ├── 📄 GameWebScoketHandler.java
+│            ├── 📄 GameWebSocketClient.java
+│            └── 📂 dto/
+│              ├── 📄 GameMessageDTO.java
+│              ├── 📄 GameStatusDTO.java
+│              ├── 📄 RoomDTO.java
+│              ├── 📄 TileDTO.java
+│      ├── 📄 module-info.java
+│    └── 📂 resources/
+│      └── 📂 assets/
+│        ├── 📄 ajustesIcon.png
+│        ├── 📄 chatIcon.png
+│        ├── 📄 exitIcon.png
+│        ├── 📄 jugadoresIcon.png
+│        ├── 📄 secreteTile.png
+│        ├── 📄 wood.png
+└── 📂 target/
 ```
 
 ---
@@ -195,14 +209,6 @@ com.rummyq.websocket.GameWebSocketClient.getInstance().connect("ws://rummiqback.
 #### GameWebScoketHandler.java
 
 Procesador de mensajes WebSocket:
-
-```java
-public class GameWebScoketHandler {
-    public void handlePlayResult(GameStatusDTO status);
-    public void handleStatusUpdate(GameStatusDTO status);
-    public void handleGameEnd(GameStatusDTO status);
-}
-```
 
 ---
 
@@ -318,71 +324,6 @@ public class GameTiles {
 
 ---
 
-## 🔄 Comunicación WebSocket
-
-### Estructura de Mensajes
-
-Los mensajes JSON entre cliente y servidor:
-
-#### 1. PLAY - Envío de Jugada
-
-**Envío desde Cliente**:
-```json
-{
-  "type": "PLAY",
-  "gameRoomId": "room123",
-  "userId": "user456",
-  "tiles": [
-    {"color": "RED", "numero": 5},
-    {"color": "RED", "numero": 6},
-    {"color": "RED", "numero": 7}
-  ]
-}
-```
-
-**Respuesta del Servidor**:
-```json
-{
-  "type": "PLAY_RESULT",
-  "success": true,
-  "gameStatus": {
-    "tablero": [...],
-    "turnoActual": "user789",
-    "fichasRestantes": {"user456": 12}
-  }
-}
-```
-
-#### 2. STATUS_UPDATE - Sincronización
-
-**Broadcast del Servidor**:
-```json
-{
-  "type": "STATUS_UPDATE",
-  "gameStatus": {
-    "jugadores": ["user123", "user456"],
-    "tablero": [...],
-    "turnoActual": "user789"
-  }
-}
-```
-
-#### 3. FIN_PARTIDA - Fin del Juego
-
-**Broadcast del Servidor**:
-```json
-{
-  "type": "FIN_PARTIDA",
-  "ganador": "user456",
-  "puntos": {
-    "user456": 100,
-    "user123": -50
-  }
-}
-```
-
----
-
 ## ▶️ Ejecutar la Aplicación
 
 ### Opción 1: Maven (Recomendado)
@@ -424,39 +365,6 @@ java --module-path $JAVAFX_HOME/lib \
 
 ## 🎨 Customización de UI
 
-### Estilos CSS
-
-Los estilos globales están en `src/main/resources/assets/styles/style.css`:
-
-```css
-/* Colores principales */
-.root {
-    -fx-primary-color: #1a1a1a;
-    -fx-secondary-color: #2d2d2d;
-    -fx-accent-color: #ff6b6b;
-}
-
-/* Botones */
-.button {
-    -fx-font-size: 14;
-    -fx-padding: 10 20 10 20;
-}
-
-.button:hover {
-    -fx-background-color: #ff6b6b;
-}
-
-/* Fichas del juego */
-.tile {
-    -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0, 0, 2);
-}
-
-.tile:hover {
-    -fx-effect: dropshadow(gaussian, rgba(255, 107, 107, 0.8), 12, 0, 0, 4);
-}
-```
-
 ### Paleta de Colores
 
 En `UIColors.java`:
@@ -478,7 +386,7 @@ public class UIColors {
 
 ## 🧪 Testing
 
-### Tests Unitarios
+### Tests Unitarios (Pendiente por implementación)
 
 ```bash
 mvn test
@@ -560,15 +468,16 @@ mvn clean idea:clean idea:idea
 | Versión | Fecha | Cambios |
 |---------|-------|---------|
 | 1.0.0 | Mayo 2026 | Lanzamiento inicial |
+| 1.0.1 | Junio 2026 | Conexión con la API de multiplayer |  
 
 ---
 
 ## 📞 Contacto y Soporte
 
-Para problemas técnicos o preguntas sobre el frontend, contacta al equipo de desarrollo.
+Para problemas técnicos o preguntas sobre el frontend, contacta al equipo de desarrollo o deja una **Issue** en el repositorio.
 
 ---
 
-**Última actualización**: Mayo 2026  
-**Versión**: 1.0.0
+**Última actualización**: Junio 2026  
+**Versión**: 1.0.1
 
